@@ -13,9 +13,14 @@
  * limitations under the License.
  */
 
+/*
+customizations by SMR 2017-04-17
+
+*/
+
 G.evaluators.iso = {
 
-  version: "iso.v1",
+  version: "iso.v1.1",
 
   evaluate: function(task) {
     this.evalBase(task);
@@ -36,10 +41,28 @@ G.evaluators.iso = {
     G.evalProp(task,item,iden,"description","gmd:abstract/gco:CharacterString");
     G.evalProps(task,item,root,"keywords_s","//gmd:MD_TopicCategoryCode | //gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:keyword/gco:CharacterString | //gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:keyword/gmx:Anchor");
     G.evalProp(task,item,iden,"thumbnail_s","gmd:graphicOverview/gmd:MD_BrowseGraphic/gmd:fileName/gco:CharacterString");
-    G.evalProps(task,item,root,"contact_organizations_s","//gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString");
-    G.evalProps(task,item,root,"contact_people_s","//gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString");
-    
-    /* links */
+      
+    /* IEDA customizations */
+
+ G.evalProps(task, item, root, "contact_organization_s", "//gmd:contact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString | //gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString | //gmd:distributorContact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString");
+ G.evalProps(task, item, root, "contact_individual_s", "//gmd:contact/gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString | //gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString | //gmd:distributorContact/gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString");
+
+ G.evalProps(task, item, root, "cited_individual_s", "//gmd:citedResponsibleParty/gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString");
+ G.evalProps(task, item, root, "cited_organization_s", "//gmd:citedResponsibleParty/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString");
+ G.evalProps(task, item, root, "metadata_org_iconlink_s", "//gmd:contact/gmd:CI_ResponsibleParty//CI_OnlineResource/linkage");
+ G.evalProps(task, item, root, "theme_keywords_s", "//gmd:MD_KeywordTypeCode[@codeListValue='theme']/../../gmd:keyword/gco:CharacterString | //gmd:MD_KeywordTypeCode[@codeListValue='theme']/../../gmd:keyword/gmx:Anchor");
+ G.evalProps(task, item, root, "place_keywords_s", "//gmd:MD_KeywordTypeCode[@codeListValue='place']/../../gmd:keyword/gco:CharacterString | //gmd:MD_KeywordTypeCode[@codeListValue='place']/../../gmd:keyword/gmx:Anchor | gmd:geographicIdentifier//gmd:code/gco:CharacterString");
+ /*  pick up keywords with other type, or no type */
+ G.evalProps(task, item, root, "other_keywords_s", "//gmd:MD_KeywordTypeCode[not(@codeListValue='place') and not(@codeListValue='theme')]/../../gmd:keyword/gco:CharacterString | //gmd:MD_KeywordTypeCode[not(@codeListValue='place') and not(@codeListValue='theme')]/../../gmd:keyword/gmx:Anchor | //gmd:MD_Keywords[not(child::*[local-name()='type'])]/gmd:keyword/gco:CharacterString | //gmd:MD_Keywords[not(child::*[local-name()='type'])]/gmd:keyword/gmx:Anchor");
+
+ G.evalProps(task, item, root, "distribution_links_s", "//gmd:distributionInformation//gmd:CI_OnlineResource/gmd:linkage/gmd:URL");
+
+ G.evalProps(task, item, root, "apiso_Format_s", "//gmd:MD_Format/name/gco:CharacterString");
+
+ /* end IEDA customizations */
+      
+      
+      /* links  */
     //G.evalProps(task,item,root,"links_s","//gmd:CI_OnlineResource/gmd:linkage/gmd:URL");
     //G.evalProps(task,item,root,"links_s","//gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL | //srv:connectPoint/gmd:CI_OnlineResource/gmd:linkage/gmd:URL"); 
     G.evalProps(task,item,root,"links_s","//gmd:CI_OnlineResource/gmd:linkage/gmd:URL[not(ancestor::gmd:thesaurusName)]");    
@@ -55,7 +78,7 @@ G.evaluators.iso = {
 
     /* subject */
     G.evalProps(task,item,root,"apiso_Subject_txt","//gmd:MD_TopicCategoryCode | //gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:keyword/gco:CharacterString | //gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:keyword/gmx:Anchor");
-    G.evalProps(task,item,root,"apiso_Format_s","gmd:distributionInfo/gmd:MD_Distribution/gmd:distributionFormat/gmd:MD_Format/name/gco:CharacterString");
+
     G.evalProps(task,item,root,"apiso_TopicCategory_s","//gmd:MD_TopicCategoryCode");
     G.evalProps(task,item,root,"apiso_KeywordType_s","//gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:type/gmd:MD_KeywordTypeCode/@codeListValue");
     G.evalCode(task,item,root,"apiso_Type_s","gmd:hierarchyLevel/gmd:MD_ScopeCode");
@@ -81,7 +104,9 @@ G.evaluators.iso = {
     var item = task.item, root = task.root;
     G.evalProps(task,item,root,"apiso_InspireSpatialDataThemes_s","//gmd:title[gco:CharacterString='GEMET - INSPIRE themes, version 1.0']/../../../gmd:keyword/gco:CharacterString");
     G.evalProps(task,item,root,"apiso_Degree_b","//gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:report/gmd:DQ_DomainConsistency/gmd:result/gmd:DQ_ConformanceResult/gmd:pass/gco:Boolean");
-    G.evalProps(task,item,root,"apiso_Lineage_txt","//gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/gmd:statement/gco:CharacterString");
+      
+      /* IEDA modify to pick up process step descriptions as well  */
+    G.evalProps(task,item,root,"apiso_Lineage_txt", "//gmd:LI_Lineage/gmd:statement/gco:CharacterString | //gmd:processStep//gmd:description/gco:CharacterString");
     G.evalProps(task,item,root,"apiso_ConditionApplyingToAccessAndUse_txt","//gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:otherConstraints/gco:CharacterString");
     G.evalCode (task,item,root,"apiso_ResponsiblePartyRole_txt","gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:role/gmd:CI_RoleCode");
     G.evalProps(task,item,root,"apiso_SpecificationTitle_txt","//gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:report/gmd:DQ_DomainConsistency/gmd:result/gmd:DQ_ConformanceResult/gmd:specification/gmd:CI_Citation/gmd:title/gco:CharacterString");

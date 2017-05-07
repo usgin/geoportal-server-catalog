@@ -53,7 +53,9 @@ G.evaluators.iso = {
  G.evalProps(task, item, root, "theme_keywords_s", "//gmd:MD_KeywordTypeCode[@codeListValue='theme']/../../gmd:keyword/gco:CharacterString | //gmd:MD_KeywordTypeCode[@codeListValue='theme']/../../gmd:keyword/gmx:Anchor");
  G.evalProps(task, item, root, "place_keywords_s", "//gmd:MD_KeywordTypeCode[@codeListValue='place']/../../gmd:keyword/gco:CharacterString | //gmd:MD_KeywordTypeCode[@codeListValue='place']/../../gmd:keyword/gmx:Anchor | gmd:geographicIdentifier//gmd:code/gco:CharacterString");
  /*  pick up keywords with other type, or no type */
- G.evalProps(task, item, root, "other_keywords_s", "//gmd:MD_KeywordTypeCode[not(@codeListValue='place') and not(@codeListValue='theme')]/../../gmd:keyword/gco:CharacterString | //gmd:MD_KeywordTypeCode[not(@codeListValue='place') and not(@codeListValue='theme')]/../../gmd:keyword/gmx:Anchor | //gmd:MD_Keywords[not(child::*[local-name()='type'])]/gmd:keyword/gco:CharacterString | //gmd:MD_Keywords[not(child::*[local-name()='type'])]/gmd:keyword/gmx:Anchor");
+ G.evalProps(task, item, root, "other_keywords_s", " //gmd:MD_Keywords[not(child::*[local-name()='type'])]/gmd:keyword/gco:CharacterString | //gmd:MD_Keywords[not(child::*[local-name()='type'])]/gmd:keyword/gmx:Anchor");
+ 
+  G.evalProps(task, item, root, "inst_plat_keywords_s", "//gmd:MD_KeywordTypeCode[@codeListValue='platform']/../../gmd:keyword/gco:CharacterString | //gmd:MD_KeywordTypeCode[@codeListValue='platform']/../../gmd:keyword/gmx:Anchor | //gmd:MD_KeywordTypeCode[@codeListValue='instrument']/../../gmd:keyword/gco:CharacterString | //gmd:MD_KeywordTypeCode[@codeListValue='instrument']/../../gmd:keyword/gmx:Anchor");
 
  G.evalProps(task, item, root, "distribution_links_s", "//gmd:distributionInformation//gmd:CI_OnlineResource/gmd:linkage/gmd:URL");
 

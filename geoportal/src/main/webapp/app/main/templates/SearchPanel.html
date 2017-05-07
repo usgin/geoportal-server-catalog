@@ -62,7 +62,8 @@
       <div data-dojo-type="app/search/TermsAggregation"
         data-dojo-props="
 		field:'cited_individual_s',
-		label:'Cited Individual'">
+		label:'Cited Individual',
+		props:{size:100}">
       </div>
 	  
 	  <div data-dojo-type="app/search/TermsAggregation"
@@ -73,10 +74,11 @@
 	  
 
       <!-- e.g. field:'keywords_s',label:'Keywords',props:{size:20,min_doc_count:500} -->
+	  <!-- SMR 2017-05-07 update label to indicate only ECL has theme keywords -->
       <div data-dojo-type="app/search/TermsAggregation"
         data-dojo-props="
 		field:'theme_keywords_s',
-		label:'Theme keywords',
+		label:'ECL theme keywords',
 		props:{size:50}">
       </div> 
       <div data-dojo-type="app/search/TermsAggregation"
@@ -87,8 +89,15 @@
       </div>       
 	  <div data-dojo-type="app/search/TermsAggregation"
         data-dojo-props="
+		field:'inst_plat_keywords_s',
+		label:'MGDL Instrument and Platform',
+		props:{size:50}">
+      </div> 
+	  
+	  <div data-dojo-type="app/search/TermsAggregation"
+        data-dojo-props="
 		field:'other_keywords_s',
-		label:'Instrument, Platform, other keywords',
+		label:'Other keywords',
 		props:{size:50}">
       </div> 
 	  

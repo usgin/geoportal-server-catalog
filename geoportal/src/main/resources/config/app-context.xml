@@ -19,7 +19,7 @@
 	</beans:bean>
 
 	<beans:bean id="elasticContext" class="com.esri.geoportal.lib.elastic.ElasticContext">
-		<beans:property name="clusterName" value="${es_cluster:elasticsearch}" />
+		<beans:property name="clusterName" value="ieda-catalog-cluster" />
 		<beans:property name="indexName" value="metadata" />
 		<beans:property name="indexNameIsAlias" value="true" />
 		<beans:property name="autoCreateIndex" value="true" />
@@ -28,7 +28,7 @@
 		<beans:property name="nodes">
 			<!-- The list of host names within the Elasticsearch cluster, one value element per host -->
 			<beans:list>
-				<beans:value>${es_node:localhost}</beans:value>
+				<beans:value>catalog-dev.iedadata.org</beans:value>
 			</beans:list>
 		</beans:property>
 	</beans:bean>

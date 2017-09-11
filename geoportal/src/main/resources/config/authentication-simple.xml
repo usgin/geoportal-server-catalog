@@ -9,9 +9,9 @@
   <security:authentication-manager alias="authenticationManager">
     <security:authentication-provider>
       <security:user-service>
-        <security:user name="gptadmin" password="gptadmin" authorities="ROLE_ADMIN,ROLE_PUBLISHER" />
-        <security:user name="admin" password="admin" authorities="ROLE_ADMIN,ROLE_PUBLISHER" />
-        <security:user name="publisher" password="publisher" authorities="ROLE_PUBLISHER" />
+        <security:user name="antadmin2" password="^i3d@anta!" authorities="ROLE_ADMIN,ROLE_PUBLISHER" />
+        <security:user name="srichard" password="5mrGPT@dm1n" authorities="ROLE_ADMIN,ROLE_PUBLISHER" />
+        <security:user name="antpublisher" password="^i3d@pub!" authorities="ROLE_PUBLISHER" />
         <security:user name="user" password="user" authorities="ROLE_USER" />
       </security:user-service>
     </security:authentication-provider>

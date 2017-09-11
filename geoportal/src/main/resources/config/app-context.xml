@@ -20,8 +20,9 @@
 
 	<beans:bean id="elasticContext" class="com.esri.geoportal.lib.elastic.ElasticContext">
 		<beans:property name="clusterName" value="ieda-catalog-cluster" />
-		<beans:property name="indexName" value="metadata" />
-		<beans:property name="indexNameIsAlias" value="true" />
+		<beans:property name="indexName" value="ant-metadata" />
+				<!-- don't want to alias to metadata index, want separate index -->
+		<beans:property name="indexNameIsAlias" value="false" />
 		<beans:property name="autoCreateIndex" value="true" />
 		<beans:property name="allowFileId" value="false" />
 		<beans:property name="mappingsFile" value="config/elastic-mappings.json" />

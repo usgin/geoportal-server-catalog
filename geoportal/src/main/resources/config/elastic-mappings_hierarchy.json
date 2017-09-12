@@ -50,7 +50,7 @@
         "hierarchy_stop": {
           "type":       "stop",
           "ignore_case": true,
-          "stopwords":  ["category > unassigned", "unassigned"]
+          "stopwords":  ["category > unassigned", "unassigned", "none"]
         }
       }
     }

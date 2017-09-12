@@ -24,25 +24,26 @@
     <security:intercept-url pattern="/" access="permitAll" />
     
     <!-- /rest/metadata/ - the metadata catalog -->
-    <security:intercept-url pattern="/rest/metadata/bulk/**" access="hasRole('ADMIN')" />
-    <security:intercept-url pattern="/rest/metadata/item/*" method="GET" access="permitAll" />
-    <security:intercept-url pattern="/rest/metadata/item/*/html" method="GET" access="permitAll" />
-    <security:intercept-url pattern="/rest/metadata/item/*/xml" method="GET" access="permitAll" />
-    <security:intercept-url pattern="/rest/metadata/item/*/owner/*" method="PUT" access="hasRole('ADMIN')" />
-    <security:intercept-url pattern="/rest/metadata/realias" access="hasRole('ADMIN')" />
-    <security:intercept-url pattern="/rest/metadata/reindex" access="hasRole('ADMIN')" />
-    <security:intercept-url pattern="/rest/metadata/search" access="permitAll" />
-    <security:intercept-url pattern="/rest/metadata/transform" access="permitAll" />
-    <security:intercept-url pattern="/rest/metadata/validate" access="permitAll" />
-    <security:intercept-url pattern="/rest/metadata/**" access="hasRole('PUBLISHER')" />
+    <!-- update paths to use the ant-metadata index SMR 2017-09-11 -->
+    <security:intercept-url pattern="/rest/ant-metadata/bulk/**" access="hasRole('ADMIN')" />
+    <security:intercept-url pattern="/rest/ant-metadata/item/*" method="GET" access="permitAll" />
+    <security:intercept-url pattern="/rest/ant-metadata/item/*/html" method="GET" access="permitAll" />
+    <security:intercept-url pattern="/rest/ant-metadata/item/*/xml" method="GET" access="permitAll" />
+    <security:intercept-url pattern="/rest/ant-metadata/item/*/owner/*" method="PUT" access="hasRole('ADMIN')" />
+    <security:intercept-url pattern="/rest/ant-metadata/realias" access="hasRole('ADMIN')" />
+    <security:intercept-url pattern="/rest/ant-metadata/reindex" access="hasRole('ADMIN')" />
+    <security:intercept-url pattern="/rest/ant-metadata/search" access="permitAll" />
+    <security:intercept-url pattern="/rest/ant-metadata/transform" access="permitAll" />
+    <security:intercept-url pattern="/rest/ant-metadata/validate" access="permitAll" />
+    <security:intercept-url pattern="/rest/ant-metadata/**" access="hasRole('PUBLISHER')" />
     
     <!-- /elastic/ - proxied to the Elasticsearch cluster -->
-    <security:intercept-url pattern="/elastic/metadata/_count/**" access="permitAll" />
-    <security:intercept-url pattern="/elastic/metadata/*/_count/**" access="permitAll" />
-    <security:intercept-url pattern="/elastic/metadata/_search/**" access="permitAll" />
-    <security:intercept-url pattern="/elastic/metadata/*/_search/**" access="permitAll" />
-    <security:intercept-url pattern="/elastic/metadata/_mappings/**" method="GET" access="permitAll" />
-    <security:intercept-url pattern="/elastic/metadata/*/_mappings/**" method="GET" access="permitAll" />
+    <security:intercept-url pattern="/elastic/ant-metadata/_count/**" access="permitAll" />
+    <security:intercept-url pattern="/elastic/ant-metadata/*/_count/**" access="permitAll" />
+    <security:intercept-url pattern="/elastic/ant-metadata/_search/**" access="permitAll" />
+    <security:intercept-url pattern="/elastic/ant-metadata/*/_search/**" access="permitAll" />
+    <security:intercept-url pattern="/elastic/ant-metadata/_mappings/**" method="GET" access="permitAll" />
+    <security:intercept-url pattern="/elastic/ant-metadata/*/_mappings/**" method="GET" access="permitAll" />
     <security:intercept-url pattern="/elastic/_search/scroll/**" method="GET" access="hasRole('PUBLISHER')" />
     <security:intercept-url pattern="/elastic/**" access="hasRole('ADMIN')" />
     

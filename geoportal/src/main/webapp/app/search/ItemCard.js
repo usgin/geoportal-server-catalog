@@ -330,8 +330,24 @@ function(declare, lang, array, string, topic, xhr, appTopics, domClass, domConst
     },
     
     _renderOwnerAndDate: function(item) {
-      var owner = item.sys_owner_s;
-      var date = item.sys_modified_dt;
+//      var owner = item.sys_owner_s;
+//      var date = item.sys_modified_dt;
+    	
+        // smr 2017-04-19  modify so displays metadata record contact organization
+        var owner = item.apiso_OrganizationName_txt;
+        // smr 2017-04-19 modify to show a citation date or the date stamp on the metadata record
+        var date = "";
+        if (item.apiso_RevisionDate_dt) {
+            date = item.apiso_RevisionDate_dt;
+        } else if (item.apiso_CreationDate_dt) {
+            date = item.apiso_CreationDate_dt;
+        } else if (item.apiso_PublicationDate_dt) {
+            date = item.apiso_PublicationDate_dt;
+        } else {
+            date = item.apiso_Modified_dt;
+        }
+
+    	
       var idx, text = "";
       if (AppContext.appConfig.searchResults.showDate && typeof date === "string" && date.length > 0) {
         idx = date.indexOf("T");
@@ -360,12 +376,14 @@ function(declare, lang, array, string, topic, xhr, appTopics, domClass, domConst
       //thumbnailNode.src = "http://placehold.it/80x60";
     },
     
+    
+    //update to show distribution links, not all links
     _uniqueLinks: function(item) {
       var links = [];
-      if (typeof item.links_s === "string") {
-        links = [item.links_s];
-      } else if (lang.isArray(item.links_s)) {
-        array.forEach(item.links_s, function(u){
+      if (typeof item.distribution_links_s === "string") {
+        links = [item.distribution_links_s];
+      } else if (lang.isArray(item.distribution_links_s)) {
+        array.forEach(item.distribution_links_s, function(u){
           if (links.indexOf(u) === -1) links.push(u);
         });
       }

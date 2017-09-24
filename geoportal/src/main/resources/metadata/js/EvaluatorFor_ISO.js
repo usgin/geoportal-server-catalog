@@ -37,29 +37,38 @@ G.evaluators.iso = {
 
     /* general */
     G.evalProp(task,item,root,"fileid","gmd:fileIdentifier/gco:CharacterString");
-    G.evalProp(task,item,iden,"title","gmd:citation/gmd:CI_Citation/gmd:title/gco:CharacterString");
-    G.evalProp(task,item,iden,"description","gmd:abstract/gco:CharacterString");
-    G.evalProps(task,item,root,"keywords_s","//gmd:MD_TopicCategoryCode | //gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:keyword/gco:CharacterString | //gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:keyword/gmx:Anchor");
+    /* get title and alternateTitle */
+    G.evalProp(task,item,iden,"title","gmd:citation/gmd:CI_Citation/gmd:title/gco:CharacterString | gmd:citation/gmd:CI_Citation/gmd:alternateTitle/gco:CharacterString");
+    
+    /* get abstract and other citation details */
+    G.evalProp(task,item,iden,"description","gmd:abstract/gco:CharacterString | gmd:citation/gmd:CI_Citation/gmd:otherCitationDetails/gco:CharacterString");
+    /* don't include the gmd topicCategory, they show up on separate facet gmd:MD_TopicCategoryCode */
+    G.evalProps(task,item,root,"keywords_s","//gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:keyword/gco:CharacterString | //gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:keyword/gmx:Anchor");
     G.evalProp(task,item,iden,"thumbnail_s","gmd:graphicOverview/gmd:MD_BrowseGraphic/gmd:fileName/gco:CharacterString");
       
     /* IEDA customizations */
-
- G.evalProps(task, item, root, "contact_organization_s", "//gmd:contact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString | //gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString | //gmd:distributorContact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString");
- G.evalProps(task, item, root, "contact_individual_s", "//gmd:contact/gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString | //gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString | //gmd:distributorContact/gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString");
-
- G.evalProps(task, item, root, "cited_individual_s", "//gmd:citedResponsibleParty/gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString");
- G.evalProps(task, item, root, "cited_organization_s", "//gmd:citedResponsibleParty/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString");
- G.evalProps(task, item, root, "metadata_org_iconlink_s", "//gmd:contact/gmd:CI_ResponsibleParty//CI_OnlineResource/linkage");
+//these are the metadata contacts
+ G.evalProps(task, item, root, "contact_organization_s", "gmd:contact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString | //gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString | //gmd:distributorContact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString");
+ G.evalProps(task, item, root, "contact_individual_s", "gmd:contact/gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString | //gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString | //gmd:distributorContact/gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString");
+//these are the agents cited in the identification section, citedResponsibleParty or pointOfContact
+ G.evalProps(task, item, iden, "cited_individual_s", "//gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString");
+ G.evalProps(task, item, iden, "cited_organization_s", "//gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString");
+ G.evalProps(task, item, root, "metadata_org_iconlink_s", "gmd:contact/gmd:CI_ResponsibleParty//CI_OnlineResource/linkage");
  G.evalProps(task, item, root, "theme_keywords_s", "//gmd:MD_KeywordTypeCode[@codeListValue='theme']/../../gmd:keyword/gco:CharacterString | //gmd:MD_KeywordTypeCode[@codeListValue='theme']/../../gmd:keyword/gmx:Anchor");
  G.evalProps(task, item, root, "place_keywords_s", "//gmd:MD_KeywordTypeCode[@codeListValue='place']/../../gmd:keyword/gco:CharacterString | //gmd:MD_KeywordTypeCode[@codeListValue='place']/../../gmd:keyword/gmx:Anchor | gmd:geographicIdentifier//gmd:code/gco:CharacterString");
  /*  pick up keywords with other type, or no type */
  G.evalProps(task, item, root, "other_keywords_s", " //gmd:MD_Keywords[not(child::*[local-name()='type'])]/gmd:keyword/gco:CharacterString | //gmd:MD_Keywords[not(child::*[local-name()='type'])]/gmd:keyword/gmx:Anchor");
  
-  G.evalProps(task, item, root, "inst_plat_keywords_s", "//gmd:MD_KeywordTypeCode[@codeListValue='platform']/../../gmd:keyword/gco:CharacterString | //gmd:MD_KeywordTypeCode[@codeListValue='platform']/../../gmd:keyword/gmx:Anchor | //gmd:MD_KeywordTypeCode[@codeListValue='instrument']/../../gmd:keyword/gco:CharacterString | //gmd:MD_KeywordTypeCode[@codeListValue='instrument']/../../gmd:keyword/gmx:Anchor");
+ /* separate index items for instrument and platform */
+ G.evalProps(task, item, root, "platform_keywords_s", "//gmd:MD_KeywordTypeCode[@codeListValue='platform']/../../gmd:keyword/gco:CharacterString | //gmd:MD_KeywordTypeCode[@codeListValue='platform']/../../gmd:keyword/gmx:Anchor");
+ G.evalProps(task, item, root, "instrument_keywords_s", "//gmd:MD_KeywordTypeCode[@codeListValue='instrument']/../../gmd:keyword/gco:CharacterString | //gmd:MD_KeywordTypeCode[@codeListValue='instrument']/../../gmd:keyword/gmx:Anchor");
+ G.evalProps(task, item, root, "project_keywords_s", "//gmd:MD_KeywordTypeCode[@codeListValue='project']/../../gmd:keyword/gco:CharacterString | //gmd:MD_KeywordTypeCode[@codeListValue='project']/../../gmd:keyword/gmx:Anchor");
 
- G.evalProps(task, item, root, "distribution_links_s", "//gmd:distributionInformation//gmd:CI_OnlineResource/gmd:linkage/gmd:URL");
+ G.evalProps(task, item, root, "distribution_links_s", "//gmd:distributionInfo//gmd:MD_DigitalTransferOptions//gmd:linkage/gmd:URL | //gmd:aggregationInfo//gmd:code[starts-with(gco:CharacterString/text(),'http')]/gco:CharacterString");
 
- G.evalProps(task, item, root, "apiso_Format_s", "//gmd:MD_Format/name/gco:CharacterString");
+ G.evalProps(task, item, root, "apiso_Format_s", "//gmd:MD_Format/gmd:name/gco:CharacterString");
+ 
+// G.evalProps(task, item, root, "contact_links_s", "//gmd:CI_OnlineResource/gmd:linkage/gmd:URL[ancestor::gmd:CI_Contact]");
 
  /* end IEDA customizations */
       

@@ -80,6 +80,15 @@
       },
       "dynamic_templates":[
         {
+          "_k":{
+            "match":"*_k",
+            "mapping":{
+              "type":"keyword",
+              "stopwords":["missing","not provided","geoscientificInformation","geographic region > polar","continent > antarctica", "antarctica","nsf","ldeo","ocean > southern ocean"]
+             }
+          }
+        },
+        {
           "_s":{
             "match":"*_s",
             "mapping":{

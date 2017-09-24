@@ -4,7 +4,7 @@
       "analyzer": {
         "default": {
           "tokenizer": "standard",
-          "filter": ["standard", "lowercase", "english_stemmer"]
+          "filter": ["standard", "lowercase", "english_stemmer", "gcmd_stop"]
         },
         "case_insensitive_sort": {
           "tokenizer": "keyword",
@@ -15,6 +15,10 @@
         "english_stemmer": {
            "type": "stemmer",
            "name": "english"
+        },
+        "gcmd_stop":{
+           "type":"stop",
+           "stopwords":["missing","not provided","geoscientificInformation","geographic region > polar","continent > antarctica", "ocean > southern ocean"]
         }
       }
     }

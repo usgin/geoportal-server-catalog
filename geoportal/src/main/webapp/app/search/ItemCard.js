@@ -334,10 +334,13 @@ function(declare, lang, array, string, topic, xhr, appTopics, domClass, domConst
 //      var date = item.sys_modified_dt;
     	
         // smr 2017-04-19  modify so displays metadata record contact organization
+    	//smr 2017-09-29 change to cited organization_s doesn't work from apiso_organization_txt
         var owner = item.apiso_OrganizationName_txt;
         // smr 2017-04-19 modify to show a citation date or the date stamp on the metadata record
         var date = "";
-        if (item.apiso_RevisionDate_dt) {
+        
+        //aren't getting anything useful so leave the date empty SMR201709-25
+        /*if (item.apiso_RevisionDate_dt) {
             date = item.apiso_RevisionDate_dt;
         } else if (item.apiso_CreationDate_dt) {
             date = item.apiso_CreationDate_dt;
@@ -345,7 +348,7 @@ function(declare, lang, array, string, topic, xhr, appTopics, domClass, domConst
             date = item.apiso_PublicationDate_dt;
         } else {
             date = item.apiso_Modified_dt;
-        }
+        }*/
 
     	
       var idx, text = "";

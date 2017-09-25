@@ -48,8 +48,8 @@ G.evaluators.iso = {
       
     /* IEDA customizations */
 //these are the metadata contacts
- G.evalProps(task, item, root, "contact_organization_s", "gmd:contact/gmd:CI_ResponsibleParty/gmd:organisationName[not(gco:CharacterString='missing')]/gco:CharacterString | //gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString | //gmd:distributorContact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString");
- G.evalProps(task, item, root, "contact_individual_s", "gmd:contact/gmd:CI_ResponsibleParty/gmd:individualName[not(gco:CharacterString='missing')]/gco:CharacterString | //gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString | //gmd:distributorContact/gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString");
+ G.evalProps(task, item, root, "contact_organization_s", "gmd:contact/gmd:CI_ResponsibleParty/gmd:organisationName[not(gco:CharacterString='missing')]/gco:CharacterString | //gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:organisationName[not(gco:CharacterString='missing')]/gco:CharacterString | //gmd:distributorContact/gmd:CI_ResponsibleParty/gmd:organisationName[not(gco:CharacterString='missing')]/gco:CharacterString");
+ G.evalProps(task, item, root, "contact_individual_s", "gmd:contact/gmd:CI_ResponsibleParty/gmd:individualName[not(gco:CharacterString='missing')]/gco:CharacterString | //gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:individualName[not(gco:CharacterString='missing')]/gco:CharacterString | //gmd:distributorContact/gmd:CI_ResponsibleParty/gmd:individualName[not(gco:CharacterString='missing')]/gco:CharacterString");
 //these are the agents cited in the identification section, citedResponsibleParty or pointOfContact
  G.evalProps(task, item, iden, "cited_individual_s", "//gmd:CI_ResponsibleParty/gmd:individualName[not(gco:CharacterString='missing')]/gco:CharacterString");
  G.evalProps(task, item, iden, "cited_organization_s", "//gmd:CI_ResponsibleParty/gmd:organisationName[not(gco:CharacterString='missing')]/gco:CharacterString");

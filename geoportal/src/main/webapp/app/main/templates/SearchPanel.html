@@ -11,6 +11,10 @@
           open: false,
           label:'${i18n.search.criteria.map}'">
       </div> -->
+	  
+	  
+<!--   might need to update data and temporal filter widgets
+ SMR 2017-10-20 -->
        <div data-dojo-type="app/search/TemporalFilter"
         data-dojo-props="
           nestedPath:'timeperiod_nst',
@@ -18,42 +22,32 @@
           toField:'timeperiod_nst.end_dt',
           interval:'year',
           open:false,
-          label:'${i18n.search.criteria.timePeriod}'">
+          label:'Data acquisition or target time interval'">
+      </div>
+	  
+<!--  SMR 2017-10-20 add pub date filter from IEDA geoportal; this might use a newer 
+   version of the filter widget -->
+	  <div data-dojo-type="app/search/TemporalFilter"
+        data-dojo-props="
+           field:'apiso_PublicationDate_dt',
+          interval:'year',
+          open:false,
+          label:'Publication or release date',
+          fieldsOperator: 'must'">
       </div>
       
-<!--       <div data-dojo-type="app/search/TemporalFilter"
-        data-dojo-props="
-          field:'sys_modified_dt',
-          interval:'day',
-          open:false,
-          label:'${i18n.search.criteria.date}'">
-      </div> -->
-      <!--
-      <div data-dojo-type="app/search/DateFilter"
-        data-dojo-props="field:'sys_created_dt',interval:'day',allowHistogram:false,label:'Created'">
-      </div>
-      -->
-<!--       <div data-dojo-type="app/search/TermsAggregation"
-        data-dojo-props="field:'sys_owner_s',open:false,label:'${i18n.search.criteria.owner}'">
-      </div> -->
       <div data-dojo-type="app/search/TermsAggregation"
         data-dojo-props="field:'apiso_TopicCategory_s',open:false,label:'${i18n.search.criteria.topicCategory}'">
       </div>
-<!--       <div data-dojo-type="app/search/TermsAggregation"
-        data-dojo-props="field:'sys_metadatatype_s',label:'${i18n.search.criteria.metadataType}'">
-      </div> -->  
-<!--       <div data-dojo-type="app/search/TermsAggregation"
-        data-dojo-props="field:'contact_organizations_s',label:'${i18n.search.criteria.organizations}'">
-      </div> -->
       
-      <!-- added by SMR 2017-09-23 -->
+      <!-- added by SMR 2017-10-20 -->
       <div data-dojo-type="app/search/TermsAggregation"
         data-dojo-props="
 		field:'cited_individual_s',
-		label:'Cited Individual',
-		props:{size:100}">
+		label:'Investigator/Author',
+		props:{size:2000, order:{_term:'asc'}}">
       </div>
-	  
+      
 <!-- 	  <div data-dojo-type="app/search/TermsAggregation"
         data-dojo-props="
 		field:'cited_organization_s',
@@ -61,42 +55,40 @@
       </div>
        -->
       
-      <!-- e.g. field:'keywords_s',label:'Keywords',props:{size:20,min_doc_count:500} -->
-<!--       <div data-dojo-type="app/search/TermsAggregation"
-        data-dojo-props="field:'keywords_s',label:'${i18n.search.criteria.keywords}',props:{size:20}">
-      </div>  -->  
-      
-	  <!-- SMR 2017-05-07 update label to indicate only ECL has theme keywords -->
-      <div data-dojo-type="app/search/TermsAggregation"
-        data-dojo-props="
-		field:'theme_keywords_s',
-		label:'Theme keywords',
-		props:{size:50}">
-      </div> 
+	  <!-- SMR 2017-10-20 change other keyword evaluation, make lists longer,
+         sort terms ascending  -->
+
       <div data-dojo-type="app/search/TermsAggregation"
         data-dojo-props="
 		field:'place_keywords_s',
 		label:'Place keywords',
-		props:{size:50}">
+		props:{size:1000, order:{_term:'asc'}}">
       </div>       
 	  <div data-dojo-type="app/search/TermsAggregation"
         data-dojo-props="
 		field:'platform_keywords_s',
 		label:'Platforms',
-		props:{size:50}">
+		props:{size:1000, order:{_term:'asc'}}">
       </div> 
       <div data-dojo-type="app/search/TermsAggregation"
         data-dojo-props="
 		field:'instrument_keywords_s',
 		label:'Instruments',
-		props:{size:50}">
+		props:{size:1000, order:{_term:'asc'}}">
       </div>
  	  <div data-dojo-type="app/search/TermsAggregation"
         data-dojo-props="
 		field:'project_keywords_s',
 		label:'Projects',
-		props:{size:50}">
+		props:{size:1000, order:{_term:'asc'}}">
       </div>
+	  
+	  <div data-dojo-type="app/search/TermsAggregation"
+        data-dojo-props="
+		field:'other_keywords_s',
+		label:'Other search terms',
+		props:{size:500}">
+      </div> 
       
 <!-- 	  <div data-dojo-type="app/search/TermsAggregation"
         data-dojo-props="

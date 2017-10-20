@@ -30,7 +30,7 @@ define({
     },
     
     nav: {
-      brand: "Interdisciplinary Earth Data Alliance, Integrated Catalog",
+      brand: "Geoportal",
       home: "Home",
       search: "Search",
       map: "Map",

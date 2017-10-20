@@ -329,7 +329,7 @@ function(declare, lang, array, string, topic, xhr, appTopics, domClass, domConst
       this._mitigateDropdownClip(dd,ddul);
     },
     
-    _renderOwnerAndDate: function(item) {
+/*    _renderOwnerAndDate: function(item) {
 //      var owner = item.sys_owner_s;
 //      var date = item.sys_modified_dt;
     	
@@ -339,18 +339,6 @@ function(declare, lang, array, string, topic, xhr, appTopics, domClass, domConst
         // smr 2017-04-19 modify to show a citation date or the date stamp on the metadata record
         var date = "";
         
-        //aren't getting anything useful so leave the date empty SMR201709-25
-        /*if (item.apiso_RevisionDate_dt) {
-            date = item.apiso_RevisionDate_dt;
-        } else if (item.apiso_CreationDate_dt) {
-            date = item.apiso_CreationDate_dt;
-        } else if (item.apiso_PublicationDate_dt) {
-            date = item.apiso_PublicationDate_dt;
-        } else {
-            date = item.apiso_Modified_dt;
-        }*/
-
-    	
       var idx, text = "";
       if (AppContext.appConfig.searchResults.showDate && typeof date === "string" && date.length > 0) {
         idx = date.indexOf("T");
@@ -364,6 +352,68 @@ function(declare, lang, array, string, topic, xhr, appTopics, domClass, domConst
       if (text.length > 0) {
         util.setNodeText(this.ownerAndDateNode,text);
       }
+    },*/
+    
+//smr 2017-10-20 replace with authors, dates, and 
+    
+    _renderOwnerAndDate: function(item) {
+
+        var owner = item.cited_individual_s;
+        var date = "";
+        var dataCenter=item.src_source_name_s;
+        var idx, text = "";
+
+/*SMR 2017-10-12 modify to display the authors and creation date
+* Authors (cited_individual_s apparently might be string or array
+* have to handle both
+*/                 
+       if (Array.isArray(owner)){
+        owner.forEach(function(element) {
+          if (typeof element === "string") {
+          if (text.length == 0  ) {
+                text = "Authors: " + element;
+            } else {
+                text = text + ", " + element;
+            };
+        }})
+        }
+        else {
+      	  if (typeof owner === "string" && owner.length > 0) {
+                if (text.length > 0) text += " ";
+                text = "Author: " + owner;
+            }
+        }
+       
+/*
+* report publication date, if missing then Created date
+* TODO-- put in release date first if that is available
+* 
+*/
+       if (typeof item.apiso_PublicationDate_dt === "string" && item.apiso_PublicationDate_dt.length > 0){
+      	 date = item.apiso_PublicationDate_dt;
+      	 idx = date.indexOf("T");
+           if (idx > 0) date =date.substring(0,idx);
+           date = ";    Data release: " + date;
+       }
+       else if (typeof item.apiso_CreatedDate_dt === "string" && item.apiso_CreatedDate_dt.length > 0 ){
+      	 date = item.apiso_CreatedDate_dt;
+      	 idx = date.indexOf("T");
+           if (idx > 0) date =date.substring(0,idx);
+           date = ";    Created: " + date;
+       }
+               
+        if (AppContext.appConfig.searchResults.showDate && typeof date === "string" && date.length > 0) {
+            text += date; }
+        
+        /*
+         * add partner system name SMR 2017-10-17
+         */          
+                  text += ";   Harvest source: " + dataCenter;
+                  
+                  if (text.length > 0) {
+                      util.setNodeText(this.ownerAndDateNode,text);
+                  }
+    	
     },
     
     _renderThumbnail: function(item) {

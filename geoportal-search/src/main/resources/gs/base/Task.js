@@ -14,15 +14,16 @@
  */
 
 (function(){
-  
+
   gs.base.Task = gs.Object.create(gs.Proto,{
-    
+
     async: {writable: true, value: true},
-    baseUrl: {writable: true, value: null}, 
+    baseUrl: {writable: true, value: null},
     config: {writable: true, value: null},
     context: {writable: true, value: null},
     dfd: {writable: true, value: null},
     hasError: {writable: true, value: false},
+    isCsw2: {writable: true, value: false},
     provider: {writable: true, value: null},
     request: {writable: true, value: null},
     response: {writable: true, value: null},
@@ -32,8 +33,8 @@
     verbose: {writable: true, value: false},
     writer: {writable: true, value: null},
     writers: {writable: true, value: null},
-    
-    newTask: {value: function(options) {
+
+    newTask: {writable:true,value:function(options) {
       var task = gs.Object.create(gs.base.Task).mixin({
         response: gs.Object.create(gs.base.Response),
         uris: gs.Object.create(gs.base.Uris),
@@ -42,7 +43,7 @@
       }).mixin(options);
       return task;
     }}
-  
+
   });
 
 }());

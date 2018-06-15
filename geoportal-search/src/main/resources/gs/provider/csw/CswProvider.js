@@ -16,24 +16,22 @@
 (function(){
 
   /* ============================================================================================ */
-  
+
   gs.provider.csw.CswProvider = gs.Object.create(gs.provider.Provider,{
-    
+
     elementSetName: {writable: true, value: null},
+    isCsw2: {writable: true, value: false},
     isCswProvider: {writable: true, value: true},
     kvpNsPrefixByUri: {writable: true, value: null},
     kvpNsUriByPrefix: {writable: true, value: null},
     recordTypeName: {writable: true, value: "Record"},
     responseFields: {writable: true, value: null},
-    
-    addOverrideParameter: {value: function(task,key,value) {
-      task.request.parameterMap[key] = value; // TODO remove keys ?
-    }},
-    
-    chkBBoxParam: {value: function(task) {
+    supportsCsw2: {writable: true, value: true},
+
+    chkBBoxParam: {writable:true,value:function(task) {
       if (task.hasError) return;
       var msg, ows;
-      var bbox = this.chkParam(task,"bbox");
+      var bbox = task.request.getBBox();
       if (bbox === null || bbox.length === 0) return;
       var a = bbox.split(",");
       if (a.length === 5) {
@@ -44,7 +42,7 @@
           ows.put(task,ows.OWSCODE_InvalidParameterValue,"bbox",msg);
           return;
         }
-      } 
+      }
       if ((a.length === 4) || (a.length === 5)) {
         var n = task.val.strToNum(a[0].trim(),1);
         if (n > 10000) {
@@ -55,34 +53,41 @@
         }
       }
     }},
-    
-    chkParam: {value: function(task,key) {
+
+    chkParam: {writable:true,value:function(task,key) {
       return task.request.chkParam(key);
     }},
-    
-    execute: {value: function(task) {
+
+    execute: {writable:true,value:function(task) {
       if (!task.request.hasQueryParameters()) {
         return this.getCapabilities(task);
       }
-        
+
       var msg, ows, promise;
       var service = this.chkParam(task,"service");
       var request = this.chkParam(task,"request");
       var version = this.chkParam(task,"version");
-      
+
+      if (!task.hasError && version !== null && version.length > 0 && version !== "3.0.0") {
+        if (version === "2.0.2" && this.supportsCsw2) {
+          this.isCsw2 = true;
+          task.isCsw2 = true;
+        } else {
+          msg = "CSW: version must be 3.0.0";
+          if (this.supportsCsw2) msg += " or 2.0.2";
+          ows = gs.Object.create(gs.provider.csw.OwsException);
+          ows.put(task,ows.OWSCODE_InvalidParameterValue,"version",msg);
+        }
+      }
+
       if (!task.hasError && service === null) {
         msg = "CSW: The service parameter is missing.";
         ows = gs.Object.create(gs.provider.csw.OwsException);
-        ows.put(task,ows.OWSCODE_MissingParameterValue,"service",msg);             
+        ows.put(task,ows.OWSCODE_MissingParameterValue,"service",msg);
       } else if (ows === null && service.toLowerCase() != "csw") {
         msg = "CSW: The service parameter must be CSW.";
         ows = gs.Object.create(gs.provider.csw.OwsException);
-        ows.put(task,ows.OWSCODE_InvalidParameterValue,"service",msg);        
-      }
-      if (!task.hasError && version !== null && version.length > 0 && version !== "3.0.0") {
-        msg = "CSW: version must be 3.0.0";
-        ows = gs.Object.create(gs.provider.csw.OwsException);
-        ows.put(task,ows.OWSCODE_InvalidParameterValue,"version",msg);
+        ows.put(task,ows.OWSCODE_InvalidParameterValue,"service",msg);
       }
       if (!task.hasError && request === null) {
         msg = "CSW: The request parameter is missing.";
@@ -90,7 +95,7 @@
         ows.put(task,ows.OWSCODE_MissingParameterValue,"request",msg);
       }
       if (!task.hasError && request.toLowerCase() === "getcapabilities") {
-        if (request !== "GetCapabilities") {
+        if (request !== "GetCapabilities" && !this.isCsw2) {
           msg = "CSW: Case sensitive issue, use request=GetCapabilities";
           ows = gs.Object.create(gs.provider.csw.OwsException);
           ows.put(task,ows.OWSCODE_InvalidParameterValue,"request",msg);
@@ -104,14 +109,14 @@
           }
         }
       }
-      
+
       if (!task.hasError) {
         var lcRequest = request.toLowerCase();
         if (lcRequest === "getcapabilities") {
           return this.getCapabilities(task);
         } else if (lcRequest === "getrecordbyid") {
           return this.getRecordById(task);
-        } else if (lcRequest === "getrecords") { 
+        } else if (lcRequest === "getrecords") {
           return this.getRecords(task);
         } else {
           msg = "CSW: The request parameter is invalid.";
@@ -127,13 +132,16 @@
         return promise;
       }
     }},
-    
-    getCapabilities: {value: function(task,promise) {
+
+    getCapabilities: {writable:true,value:function(task) {
       var msg, ows, xml, promise = task.context.newPromise();
       var cswUrl = task.baseUrl+"/csw"; // TODO
-      var opensearchDscUrl = task.baseUrl+"/opensearch/description"; // TODO
+      var opensearchDscUrl = task.baseUrl+"/opensearch/description";
       cswUrl = this.makeCapabilitiesHref(task,cswUrl);
-      
+      opensearchDscUrl = this.makeCapabilitiesHref(task,opensearchDscUrl);
+      var capabilitiesFile = task.config.cswCapabilitiesFile;
+      if (this.isCsw2) capabilitiesFile = task.config.csw2CapabilitiesFile;
+
       var mime = null;
       var hasTextXml = false;
       var hasAppXml = false;
@@ -154,7 +162,7 @@
           }
         });
       }
-      
+
       var accept = task.request.getHeader("accept");
       if (accept === "text/xml") {
         hasTextXml = true;
@@ -165,8 +173,8 @@
         msg = "CSW: The acceptFormats parameter is invalid.";
         ows = gs.Object.create(gs.provider.csw.OwsException);
         ows.put(task,ows.OWSCODE_InvalidParameterValue,"acceptFormats",msg);
-      } 
-      
+      }
+
       if (!task.hasError) {
         var acceptVersions = task.request.getParameterValues("acceptVersions");
         if (acceptVersions !== null && acceptVersions.length === 1) {
@@ -183,14 +191,14 @@
           }
         }
       }
-  
+
       if (!task.hasError) {
-        xml = task.context.readResourceFile(task.config.cswCapabilitiesFile,"UTF-8");
+        xml = task.context.readResourceFile(capabilitiesFile,"UTF-8");
         xml = xml.trim();
         xml = xml.replace(/{csw.url}/g,task.val.escXml(cswUrl));
         xml = xml.replace(/{opensearch.description.url}/g,task.val.escXml(opensearchDscUrl));
       }
-      
+
       if (!task.hasError) {
         var sections = this.chkParam(task,"sections");
         if (sections !== null && sections.length > 0) {
@@ -204,7 +212,7 @@
           }
         }
       }
-      
+
       if (!task.hasError) {
         var response = task.response;
         response.put(response.Status_OK,response.MediaType_APPLICATION_XML,xml);
@@ -217,8 +225,8 @@
       }
       return promise;
     }},
-    
-    getRecordById: {value: function(task,promise) {
+
+    getRecordById: {writable:true,value:function(task) {
       var msg, ows;
       task.request.isItemByIdRequest = true;
       var id = task.request.getParameter("id");
@@ -240,25 +248,27 @@
         return this.search(task);
       }
     }},
-    
-    getRecords: {value: function(task,promise) {
+
+    getRecords: {writable:true,value:function(task) {
       var msg, ows;
       this.inputIndexOffset = 1; // TODO?
+      var parser = gs.Object.create(gs.provider.csw.GetRecordsParser);
+      parser.parseBody(this,task);
       var startPosition = this.chkParam(task,"startPosition");
       if (startPosition !== null && startPosition.length > 0) {
-        var from = task.val.strToInt(startPosition,-1);
+        var start = task.val.strToInt(startPosition,-1);
         // TODO should this be >= 1
-        if (from >= 1) {
-          // TODO from = from - 1; is this correct indexOffset??
-          this.addOverrideParameter(task,"from",""+from);
+        if (start >= 1) {
+          // TODO start = start - 1; is this correct indexOffset??
+          this.addOverrideParameter(task,"start",""+start);
         }
       }
       var maxRecords = this.chkParam(task,"maxRecords");
       if (maxRecords !== null && maxRecords.length > 0) {
         if (maxRecords.toLowerCase !== "unlimited") {
-          var size = task.val.strToInt(maxRecords,-1);
-          if (size >= 0) {
-            this.addOverrideParameter(task,"size",""+size);
+          var num = task.val.strToInt(maxRecords,-1);
+          if (num >= 0) {
+            this.addOverrideParameter(task,"num",""+num);
           }
         }
       }
@@ -271,14 +281,14 @@
         return this.search(task);
       }
     }},
-    
-    makeCapabilitiesHref: {value: function(task,cswUrl) {
+
+    makeCapabilitiesHref: {writable:true,value:function(task,cswUrl) {
       // TODO encoding decoding ?
       var str = "", url = task.request.url;
       var n = url.indexOf("?");
       if (n !== -1) str = url.substring(n + 1);
-      //console.warn("str",str);
-      
+      //console.log("str",str);
+
       var i, l, qp = str.split("&"), map = {}, name, val, item;
       for (i = 0, l = qp.length; i < l; ++i){
         item = qp[i];
@@ -319,16 +329,16 @@
           }
         }
       }
-      
+
       var qstr = pairs.join("&");
       if (qstr.length > 0) cswUrl = cswUrl + "?" + qstr;
-      //console.warn("qstr",qstr);
-      //console.warn("cswUrl",cswUrl);
-      
+      //console.log("qstr",qstr);
+      //console.log("cswUrl",cswUrl);
+
       return cswUrl;
     }},
-    
-    parseKvp: {value: function(task) {
+
+    parseKvp: {writable:true,value:function(task) {
       if (task.hasError) return;
       task.request.f = "csw";
       this.kvpNsPrefixByUri = {};
@@ -339,17 +349,17 @@
       this.parseKvpTypeNames(task);
       this.parseKvpElementNames(task); // TODO field names
       //this.parseKvpSortBy(task);     // TODO sortBy differences, field names
-      //this.parseKvpTime(task);       // TODO validation OwsExceptions?? 
+      //this.parseKvpTime(task);       // TODO validation OwsExceptions??
       task.request.parseF(task);
     }},
-    
-    parseKvpElementNames: {value: function(task) {
+
+    parseKvpElementNames: {writable:true,value:function(task) {
       if (task.hasError) return;
       var msg, ows, self = this;
       var defaultSetName = this.elementSetName;
       var recordTypeName = this.recordTypeName;
       var responseFields = null;
-      
+
       var elementSetName = this.chkParam(task,"ElementSetName");
       var elementNames = task.request.getParameterValues("ElementName");
       if (elementNames !== null && elementNames.length === 1) {
@@ -361,10 +371,10 @@
           msg += " be specified in a query.";
           ows = gs.Object.create(gs.provider.csw.OwsException);
           ows.put(task,ows.OWSCODE_NoApplicableCode,"ElementSetName",msg);
-          return; 
+          return;
         }
       }
-      
+
       if (elementSetName !== null && elementSetName.length > 0) {
         elementSetName = elementSetName.toLowerCase();
         if (elementSetName === "brief") {
@@ -377,7 +387,7 @@
           msg = "CSW: The ElementSetName parameter must be brief, summary or full.";
           ows = gs.Object.create(gs.provider.csw.OwsException);
           ows.put(task,ows.OWSCODE_InvalidParameterValue,"ElementSetName",msg);
-          return; 
+          return;
         }
       } else if (elementNames != null && elementNames.length > 0) {
         elementSetName = "summary";
@@ -398,7 +408,7 @@
               msg = "CSW: An ElementName is invalid.";
               ows = gs.Object.create(gs.provider.csw.OwsException);
               ows.put(task,ows.OWSCODE_InvalidParameterValue,"ElementName",msg);
-              return; 
+              return;
             }
           }
         });
@@ -419,18 +429,18 @@
           elementSetName = "summary";
           recordTypeName = "SummaryRecord";
         }
-      }    
-      
+      }
+
       this.recordTypeName = recordTypeName;
       this.elementSetName = elementSetName;
       this.elementNames = elementNames;
       this.responseFields = responseFields;
     }},
-    
-    parseKvpNamespace: {value: function(task) {
+
+    parseKvpNamespace: {writable:true,value:function(task) {
       if (task.hasError) return;
       var msg, ows, self = this;
-  
+
       // pattern: namespace=xmlns(ogc=http://www.opengis.net/ogc),xmlns(gml=http://www.opengis.net/gml)...
       var namespaces = task.request.getParameterValues("namespace");
       if (namespaces !== null && namespaces.length === 1) {
@@ -460,7 +470,7 @@
             msg += " xmlns(pfx1=uri1),xmlns(pfx2=uri2),...";
             ows = gs.Object.create(gs.provider.csw.OwsException);
             ows.put(task,ows.OWSCODE_InvalidParameterValue,"namespace",msg);
-            return; 
+            return;
           } else {
             if (nsPfx !== null && nsPfx.length > 0) {
               self.kvpNsUriByPrefix[nsPfx] = nsUri;
@@ -469,20 +479,20 @@
           }
         });
         if (task.hasError) return;
-      } 
-      
+      }
+
       //for (var k in this.kvpNsUriByPrefix) console.log(k,":",this.kvpNsUriByPrefix[k]);
       //for (var k in this.kvpNsPrefixByUri) console.log(k,":",this.kvpNsPrefixByUri[k]);
     }},
-    
-    parseKvpOutput: {value: function(task) {
+
+    parseKvpOutput: {writable:true,value:function(task) {
       if (task.hasError) return;
       var lc, msg, ows;
       var outputSchema = this.chkParam(task,"outputSchema");
       var outputFormat =  this.chkParam(task,"outputFormat");
       var f =  this.chkParam(task,"f");
       if (outputSchema !== null && outputSchema.length > 0) {
-        lc = outputSchema.toLowerCase()
+        lc = outputSchema.toLowerCase();
         if (lc === task.uris.URI_CSW.toLowerCase()) {
           outputSchema = task.uris.URI_CSW;
         } else if (lc === task.uris.URI_ATOM.toLowerCase()) {
@@ -491,10 +501,10 @@
           msg = "CSW: The outputSchema parameter must be "+task.uris.URI_CSW+" or "+task.uris.URI_ATOM;
           ows = gs.Object.create(gs.provider.csw.OwsException);
           ows.put(task,ows.OWSCODE_InvalidParameterValue,"outputSchema",msg);
-          return; 
+          return;
         }
       } else if (outputFormat !== null && outputFormat.length > 0) {
-        lc = outputFormat.toLowerCase()
+        lc = outputFormat.toLowerCase();
         if (lc === "application/xml") {
           outputSchema = task.uris.URI_CSW;
         } else if (lc === "application/atom+xml") {
@@ -503,7 +513,7 @@
           msg = "CSW: The outputFormat parameter must be application/xml or application/atom+xml";
           ows = gs.Object.create(gs.provider.csw.OwsException);
           ows.put(task,ows.OWSCODE_InvalidParameterValue,"outputFormat",msg);
-          return; 
+          return;
         }
       } else if (f === null || f.length === 0) {
         outputSchema = task.uris.URI_CSW;
@@ -511,10 +521,10 @@
       if (outputSchema !== null && outputSchema.length > 0) {
         this.addOverrideParameter(task,"outputSchema",outputSchema);
       }
-      
-    }}, 
-    
-    parseKvpTypeNames: {value: function(task) {
+
+    }},
+
+    parseKvpTypeNames: {writable:true,value:function(task) {
       if (task.hasError) return;
       var msg, ows;
       var typeNames = this.chkParam(task,"typeNames");
@@ -534,50 +544,51 @@
           msg = "CSW: The typeNames parameter must be csw:Record";
           ows = gs.Object.create(gs.provider.csw.OwsException);
           ows.put(task,ows.OWSCODE_InvalidParameterValue,"typeNames",msg);
-          return; 
+          return;
         }
       }
     }},
-    
-    search: {value: function(task,promise) {
+
+    search: {writable:true,value:function(task) {
       var promise = task.context.newPromise();
       task.request.parseF(task);
       this.setWriter(task);
-      task.target.parseRequest(task);
-      var p2 = task.target.search(task);
-      p2.then(function(searchResult){
-        task.writer.write(task,searchResult);
-        promise.resolve();
+      task.target.search(task).then(function(searchResult){
+        if (task.request.isItemByIdRequest && (!searchResult.items || searchResult.items.length === 0)) {
+          task.response.status = task.response.Status_NOT_FOUND;
+          ows = gs.Object.create(gs.provider.csw.OwsException);
+          ows.put(task,ows.OWSCODE_InvalidParameterValue,"id","Id not found.");
+          promise.resolve();
+        } else {
+          task.writer.write(task,searchResult);
+          promise.resolve();
+        }
       })["catch"](function(error){
         var msg = "Search error";
         if (typeof error.message === "string" && error.message.length > 0) {
           msg = error.message;
         }
+        task.response.status = task.response.Status_INTERNAL_SERVER_ERROR;
         ows = gs.Object.create(gs.provider.csw.OwsException);
         ows.put(task,ows.OWSCODE_NoApplicableCode,null,msg);
-        var xml = ows.getReport(task);
-        var response = task.response;
-        response.put(response.Status_INTERNAL_SERVER_ERROR,response.MediaType_APPLICATION_XML,xml);
-        task.hasError = true;
-        promise.reject();
+        promise.resolve();
       });
-      return promise;    
-      
+      return promise;
     }}
-  
+
   });
-  
+
   /* ============================================================================================ */
-  
+
   gs.provider.csw.QField = gs.Object.create(gs.Proto,{
-    
+
     name: {writable: true, value: null},
     namespacePrefix: {writable: true, value: null},
     namespaceUri: {writable: true, value: null},
     qname: {writable: true, value: null},
     sortable: {writable: true, value: false},
-    
-    init: {value: function(name, namespaceUri, nsUriByPrefix) {
+
+    init: {writable:true,value:function(name, namespaceUri, nsUriByPrefix) {
       this.name = name;
       this.qname = name;
       var chkByPrefix = true;
@@ -596,34 +607,33 @@
         }
       }
     }}
-  
+
   });
-  
+
   /* ============================================================================================ */
-  
+
   gs.provider.csw.QFields = gs.Object.create(gs.Proto,{
-    
-  
+
     list: {writable: true, value: null},
-    
-    add: {value: function(field) {
+
+    add: {writable:true,value:function(field) {
       if (!this.list) this.list = [];
       this.list.push(field);
       return field;
     }},
-    
-    _add: {value: function(name,namespaceUri) {
+
+    _add: {writable:true,value:function(name,namespaceUri) {
       var field = gs.Object.create(gs.provider.csw.QField);
       field.init(name,namespaceUri,null);
       return this.add(field);
     }},
-    
-    makeAll: {value: function(task) {
+
+    makeAll: {writable:true,value:function(task) {
       this.list = [];
       this._add("dc:identifier",task.uris.URI_DC);                 // brief
       this._add("dc:title",task.uris.URI_DC).sortable = true;      // brief
       this._add("dc:type",task.uris.URI_DC).sortable = true;       // brief
-      this._add("ows:BoundingBox",task.uris.URI_OWS);              // brief
+      this._add("ows:BoundingBox",task.uris.URI_OWS2);             // brief
       this._add("dc:subject",task.uris.URI_DC);                    // summary
       //this._add("dc:format",task.uris.URI_DC);                   // summary
       //this._add("dc:relation",task.uris.URI_DC);                 // summary
@@ -639,8 +649,8 @@
       this._add("dc:rights",task.uris.URI_DC);                     // full - Access and Use Constraints
       this._add("dct:references",task.uris.URI_DCT);               // summary? should this be full? - Links
     }},
-    
-    match: {value: function(field) {
+
+    match: {writable:true,value:function(field) {
       var found = null, lc = field.name.toLowerCase();
       if (this.list) {
         this.list.some(function(f){
@@ -654,16 +664,14 @@
       }
       return found;
     }},
-    
-    size: {value: function() {
+
+    size: {writable:true,value:function() {
       if (this.list) return this.list.length;
       return 0;
     }}
-    
+
   });
-  
+
   /* ============================================================================================ */
 
 }());
-
-

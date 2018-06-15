@@ -14,8 +14,8 @@
  */
 define(["dojo/_base/declare",
         "dojo/_base/lang",
-        "esri/layers/vector-tile"],
-function(declare, lang, vectorTile) {
+        "esri/layers/VectorTileLayer",],
+function(declare, lang, VectorTileLayer) {
   
   /*
     type 
@@ -96,7 +96,7 @@ function(declare, lang, vectorTile) {
             type = "StreamServer";
           } else if (lc.indexOf("/vectortileserver") > 0 || 
               lc.indexOf("/resources/styles/root.json") > 0) {
-            if (vectorTile.supported()) {
+            if (VectorTileLayer && VectorTileLayer.supported()) {
               type = "VectorTileServer";
             }
           }
@@ -111,6 +111,8 @@ function(declare, lang, vectorTile) {
           } else if (endsWith(lc,".xml") &&
             (lc.indexOf("rss") > 0 || lc.indexOf("georss") > 0)) { 
             type = "GeoRSS";
+          } else if (endsWith(lc,".zip")) { 
+            type = "Shapefile";
           }
         }
       }

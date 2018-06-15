@@ -14,13 +14,23 @@
  */
 
 (function(){
-  
+  /*jshint -W069 */
+
+  gs.target.types["geoportal"] = {
+    newInstance: function(options,safeOptions) {
+      if (options && options.url) options.searchUrl = options.url;
+      var target = gs.Object.create(gs.target.elastic.GeoportalTarget);
+      target.safeMixin(options).mixin(safeOptions);
+      return target;
+    }
+  };
+
   gs.target.elastic.GeoportalTarget = gs.Object.create(gs.target.elastic.ElasticTarget, {
-    
-    newSchema: {value:function(task) {
-      return gs.Object.create(gs.target.elastic.GeoportalSchema);
+
+    getSchemaClass: {writable:true,value:function() {
+      return gs.target.elastic.GeoportalSchema;
     }}
-  
+
   });
 
 }());

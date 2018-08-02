@@ -34,7 +34,8 @@ define(["dojo/_base/declare",
         "app/content/ChangeOwner",
         "app/content/MetadataEditor",
         "app/context/metadata-editor",
-        "app/content/UploadMetadata"], 
+        "app/content/UploadMetadata",
+    "app/prov/Prov"],
 function(declare, lang, array, string, topic, xhr, appTopics, domClass, domConstruct,
     _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, Tooltip, template, i18n, 
     AppClient, ServiceType, util, ConfirmationDialog, ChangeOwner, 
@@ -77,14 +78,18 @@ function(declare, lang, array, string, topic, xhr, appTopics, domClass, domConst
       item._id = hit._id; 
       var links = this._uniqueLinks(item);
       util.setNodeText(this.titleNode,item.title);
-      this._renderOwnerAndDate(item);
-      util.setNodeText(this.descriptionNode,item.description);
+      //this._renderOwnerAndDate(item);
+      this._renderSourceAndDate(item);
+      //util.setNodeText(this.descriptionNode,item.description);
+      this._renderDescription(item);
       this._renderThumbnail(item);
       this._renderItemLinks(hit._id,item);
       this._renderLinksDropdown(item,links);
       this._renderOptionsDropdown(hit._id,item);
       this._renderAddToMap(item,links);
       this._renderServiceStatus(item);
+      //this._renderWorkbenchLinksDropdown(item,links);
+      //this._renderCinergiLinks(hit._id,item);
     },
     
     _canEditMetadata: function(item,isOwner,isAdmin,isPublisher) {
@@ -362,6 +367,7 @@ function(declare, lang, array, string, topic, xhr, appTopics, domClass, domConst
     
     _uniqueLinks: function(item) {
       var links = [];
+//makes links into an array
       if (typeof item.links_s === "string") {
         links = [item.links_s];
       } else if (lang.isArray(item.links_s)) {
@@ -470,8 +476,131 @@ function(declare, lang, array, string, topic, xhr, appTopics, domClass, domConst
         }
       }
       return null;
-    }
-    
+    },
+
+    _renderSourceAndDate: function(item) {
+/*          var owner = item.src_source_name_s;
+          var date = item.sys_modified_dt;*/
+          var owner = item.cited_individual_s;
+          var date = "";
+          var dataCenter=item.dataCentre_s;
+          var idx, text = "";
+
+/*SMR 2017-10-12 modify to display the authors and creation date
+ * Authors (cited_individual_s apparently might be string or array
+ * have to handle both
+ */                 
+         if (Array.isArray(owner)){
+          owner.forEach(function(element) {
+            if (typeof element === "string") {
+            if (text.length == 0  ) {
+                  text = "Authors: " + element;
+              } else {
+                  text = text + ", " + element;
+              };
+          }})
+          }
+          else {
+        	  if (typeof owner === "string" && owner.length > 0) {
+                  if (text.length > 0) text += " ";
+                  text = "Author: " + owner;
+              }
+          }
+         
+/*
+ * report either the publication(available, release) date or reported creation date
+ * 
+ */
+         if (typeof item.apiso_PublicationDate_dt === "string" && item.apiso_PublicationDate_dt.length > 0){
+        	 date = item.apiso_PublicationDate_dt;
+        	 idx = date.indexOf("T");
+             if (idx > 0) date =date.substring(0,idx);
+             idx = date.indexOf("-01-01");
+             if (idx > 0) date =date.substring(0,idx);
+             date = ";    Data release: " + date;
+         }
+         else if (typeof item.apiso_CreatedDate_dt === "string" && item.apiso_CreatedDate_dt.length > 0 ){
+        	 date = item.apiso_CreatedDate_dt;
+        	 idx = date.indexOf("T");
+             if (idx > 0) date =date.substring(0,idx);
+             idx = date.indexOf("-01-01");
+             if (idx > 0) date =date.substring(0,idx);
+             date = ";    Created: " + date;
+         }
+                 
+          if (AppContext.appConfig.searchResults.showDate && typeof date === "string" && date.length > 0) {
+              text += date;
+          }
+/*
+ * add partner system name SMR 2017-10-17
+ */          
+          text += ";   IEDA Partner: " + dataCenter;
+          
+          if (text.length > 0) {
+              util.setNodeText(this.ownerAndDateNode,text);
+          }
+      },
+      _renderWorkbenchLinksDropdown: function(item,links) {
+          if ( ! Array.isArray(item.services_nst)) return;
+          if( item.services_nst.length === 0) return;
+          var dd = domConstruct.create("div",{
+              "class": "dropdown",
+              "style": "display:inline-block;"
+          },this.actionsNode);
+          var ddbtn = domConstruct.create("a",{
+              "class": "dropdown-toggle",
+              "href": "#",
+              "data-toggle": "dropdown",
+              "aria-haspopup": true,
+              "aria-expanded": true,
+              innerHTML: "Workbench"
+          },dd);
+          domConstruct.create("span",{
+              "class": "caret"
+          },ddbtn);
+          var ddul = domConstruct.create("ul",{
+              "class": "dropdown-menu",
+          },dd);
+          if (lang.isArray(item.services_nst)){
+          array.forEach(item.services_nst, function(u){
+              var ddli = domConstruct.create("li",{},ddul);
+              domConstruct.create("a",{
+                  "class": "small",
+                  href: u.url_s,
+                  target: "_blank",
+                  innerHTML: u.url_type_s
+              },ddli);
+          });
+          }
+          this._mitigateDropdownClip(dd,ddul);
+      },
+      _renderCinergiLinks: function(itemId,item) {
+          // if categories_cat exists, then these should exist
+          if (item.categories_cat) {
+
+          var actionsNode = this.actionsNode;
+          var uri = "app/prov/templates/Prov.html?source=" + encodeURIComponent(item.fileid);
+          var htmlNode = domConstruct.create("a", {
+              href: uri + "&ttl=" + encodeURIComponent(item.title),
+              target: "_blank",
+              innerHTML: "Provenance"
+          }, actionsNode);
+          var uri2 = "http://mdeditor.usgin.org/?docId=" + encodeURIComponent(item.fileid);
+          var htmlNode = domConstruct.create("a", {
+              href: uri2,
+              target: "_blank",
+              innerHTML: "Edit"
+          }, actionsNode);
+      }
+
+      },
+      _renderDescription: function (item) {
+      var desc = item.apiso_Abstract_txt;
+      if (desc && desc.indexOf("REQUIRED FIELD") > -1 ){
+        desc = "";
+      }
+          util.setNodeText(this.descriptionNode,desc);
+      }
   });
   
   return oThisClass;

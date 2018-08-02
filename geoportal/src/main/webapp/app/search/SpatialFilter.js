@@ -50,12 +50,13 @@ define(["dojo/_base/declare",
         "esri/Color",
         "esri/dijit/PopupTemplate",
         "esri/InfoTemplate",
-        "esri/dijit/Search"], 
+        "esri/dijit/Search",
+        "dijit/Tooltip"],
 function(declare, lang, array, aspect, djQuery, on, domConstruct, domClass, domGeometry, domStyle, djNumber, 
     topic, appTopics, template, i18n, SearchComponent, DropPane, QClause, GeohashEx, util, Settings, Map, 
     ArcGISTiledMapServiceLayer, GraphicsLayer, webMercatorUtils, Extent, Point, SpatialReference, 
     SimpleMarkerSymbol, SimpleLineSymbol, SimpleFillSymbol, PictureMarkerSymbol, ClassBreaksRenderer, 
-    SimpleRenderer, Graphic, Color, PopupTemplate, InfoTemplate, SearchWidget) {
+    SimpleRenderer, Graphic, Color, PopupTemplate, InfoTemplate, SearchWidget,Tooltip) {
   
   var oThisClass = declare([SearchComponent], {
     
@@ -84,6 +85,7 @@ function(declare, lang, array, aspect, djQuery, on, domConstruct, domClass, domG
       this.inherited(arguments);
       this.initializeChoices();
       this.initializeMap();
+      this.intializeToolTip();
       
       this._initialSettings = {
         label: this.label,
@@ -375,6 +377,7 @@ function(declare, lang, array, aspect, djQuery, on, domConstruct, domClass, domG
         })));
       })));
     },
+
     
     /* SearchComponent API ============================================= */
     
@@ -400,19 +403,19 @@ function(declare, lang, array, aspect, djQuery, on, domConstruct, domClass, domG
         var qry = {"geo_shape":{}};
         qry.geo_shape[field] = {"shape":shp,"relation":relation};
         
-        // TODO
-        qry = {"geo_bounding_box": {
-          "envelope_cen_pt" : {
-            "top_left" : {
-              "lat" : env.ymax,
-              "lon" : env.xmin
-            },
-            "bottom_right" : {
-              "lat" : env.ymin,
-              "lon" : env.xmax
-            }
-          }
-        }};
+        // SMR comment out per https://github.com/Esri/geoportal-server-catalog/issues/104
+//        qry = {"geo_bounding_box": {
+//          "envelope_cen_pt" : {
+//            "top_left" : {
+//              "lat" : env.ymax,
+//              "lon" : env.xmin
+//            },
+//            "bottom_right" : {
+//              "lat" : env.ymin,
+//              "lon" : env.xmax
+//            }
+//          }
+//        }};
        
         
         return qry;
@@ -559,7 +562,13 @@ function(declare, lang, array, aspect, djQuery, on, domConstruct, domClass, domG
       if (this === qClause.parentQComponent) {
         djQuery("input[data-op=any]",this.relationsNode)[0].checked = true;
       }
-    }
+    },
+
+      intializeToolTip: function(){
+          var node =  this.dropPane.titleBarNode;
+          //  var node = dom.byId('someNode');
+          this.ToolTip.set("connectId",[node]);
+      }
     
   });
   

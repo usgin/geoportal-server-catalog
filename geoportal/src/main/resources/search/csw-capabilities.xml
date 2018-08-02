@@ -2,36 +2,32 @@
 <csw:Capabilities version="3.0.0" xmlns:csw="http://www.opengis.net/cat/csw/3.0"
   xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:gml="http://www.opengis.net/gml/3.2"
   xmlns:ows="http://www.opengis.net/ows/2.0" xmlns:ows11="http://www.opengis.net/ows/1.1"
-  xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:xlink="http://www.w3.org/1999/xlink">
+  xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.opengis.net/cat/csw/3.0 http://schemas.opengis.net/cat/csw/3.0/cswAll.xsd">
   <ows:ServiceIdentification>
-    <ows:Title>CSW</ows:Title>
-    <ows:Abstract>A catalogue service that conforms to the HTTP protocol binding of the OpenGIS Catalogue Service specification (version 3.0)</ows:Abstract>
+    <ows:Title>IEDA Integrated Catalog CSW Service</ows:Title>
+    <ows:Abstract>This catalog service that conforms to the HTTP protocol binding of the OpenGIS Catalogue Service specification (version 3.0). This service implements a minimal conformance class for the CSW v3, enabling queries on AnyText, BoundingBox, and TemporalExtent, with output available as CSW:record XML or Atom XML, both of which contain basic Dubliin Core metadata elements. Catalog records are harvested from the EarthChem Library, US Antarctic Program Data Center, Marine Geoscience Data Library and Academic Seismic Portal partners of the Interdisciplinary Earth Data Alliance. A web interface to search the catatalog is accessible at http://....tbd</ows:Abstract>
     <ows:Keywords>
       <ows:Keyword>CSW</ows:Keyword>
+	  <ows:Keyword>Marine Geoscience</ows:Keyword>
+	  <ows:Keyword>Geochemistry</ows:Keyword>
+	  <ows:Keyword>Antarctica</ows:Keyword>
+	  <ows:Keyword>Earth Science</ows:Keyword>
     </ows:Keywords>
     <ows:ServiceType>CSW</ows:ServiceType>
     <ows:ServiceTypeVersion>3.0.0</ows:ServiceTypeVersion>
   </ows:ServiceIdentification>
   <ows:ServiceProvider>
-    <ows:ProviderName></ows:ProviderName>
-    <ows:ProviderSite xlink:type="simple" xlink:href="" />
+    <ows:ProviderName>Interdisciplinary Earth Data Alliance, Lamont-Doherty Earth Observatory, Columbia University</ows:ProviderName>
+    <ows:ProviderSite xlink:type="simple" xlink:href="https://www.iedadata.org/" />
     <ows:ServiceContact>
-      <ows:IndividualName />
-      <ows:PositionName />
+      <ows:PositionName>Information Desk</ows:PositionName>
       <ows:ContactInfo>
-        <ows:Phone>
-          <ows:Voice></ows:Voice>
-          <ows:Facsimile></ows:Facsimile>
-        </ows:Phone>
         <ows:Address>
-          <ows:DeliveryPoint></ows:DeliveryPoint>
-          <ows:City></ows:City>
-          <ows:AdministrativeArea></ows:AdministrativeArea>
-          <ows:PostalCode></ows:PostalCode>
-          <ows:Country></ows:Country>
-          <ows:ElectronicMailAddress></ows:ElectronicMailAddress>
+          <ows:ElectronicMailAddress>info@iedadata.org</ows:ElectronicMailAddress>
         </ows:Address>
-        <ows:OnlineResource xlink:href="" />
+          <ows:OnlineResource xlink:href="https://www.iedadata.org/contact" />
       </ows:ContactInfo>
     </ows:ServiceContact>
   </ows:ServiceProvider>
@@ -40,8 +36,8 @@
     <ows:Operation name="GetCapabilities">
       <ows:DCP>
         <ows:HTTP>
-          <ows:Get xlink:href="{csw.url}" />
-          <ows:Post xlink:href="{csw.url}" />
+            <ows:Get xlink:href="http://catalog-dev.iedadata.org:8080/geoportal/csw" />
+            <ows:Post xlink:href="http://catalog-dev.iedadata.org:8080/geoportal/csw" />
         </ows:HTTP>
       </ows:DCP>
       <ows:Parameter name="AcceptVersions">
@@ -66,8 +62,8 @@
     <ows:Operation name="GetRecords">
       <ows:DCP>
         <ows:HTTP>
-          <ows:Get xlink:href="{csw.url}" />
-          <ows:Post xlink:href="{csw.url}" />
+            <ows:Get xlink:href="http://catalog-dev.iedadata.org:8080/geoportal/csw" />
+            <ows:Post xlink:href="http://catalog-dev.iedadata.org:8080/geoportal/csw" />
         </ows:HTTP>
       </ows:DCP>
       <ows:Parameter name="typeName">
@@ -102,7 +98,7 @@
       </ows:Constraint>
       <ows:Constraint name="OpenSearchDescriptionDocument">
         <ows:AllowedValues>
-          <ows:Value>{opensearch.description.url}</ows:Value>
+            <ows:Value>http://catalog-dev.iedadata.org:8080/geoportal/opensearch/description</ows:Value>
         </ows:AllowedValues>
       </ows:Constraint>
     </ows:Operation>
@@ -110,8 +106,8 @@
     <ows:Operation name="GetRecordById">
       <ows:DCP>
         <ows:HTTP>
-          <ows:Get xlink:href="{csw.url}" />
-          <ows:Post xlink:href="{csw.url}" />
+            <ows:Get xlink:href="http://catalog-dev.iedadata.org:8080/geoportal/csw" />
+            <ows:Post xlink:href="http://catalog-dev.iedadata.org:8080/geoportal/csw" />
         </ows:HTTP>
       </ows:DCP>
       <ows:Parameter name="outputFormat">
@@ -290,17 +286,6 @@
         <ows:Value>false</ows:Value>
       </ows:AllowedValues>
     </ows:Constraint>
-    <ows:Constraint name="FedeartedCatalogues">
-      <ows:AllowedValues>
-        <ows:Value />
-      </ows:AllowedValues>
-    </ows:Constraint>
-    <ows:Constraint name="WSDL">
-      <ows:AllowedValues>
-        <ows:Value />
-      </ows:AllowedValues>
-    </ows:Constraint>
-
   </ows:OperationsMetadata>
   
   <ows:Languages>
@@ -336,3 +321,4 @@
     </fes:Temporal_Capabilities>
   </fes:Filter_Capabilities>
 </csw:Capabilities>
+

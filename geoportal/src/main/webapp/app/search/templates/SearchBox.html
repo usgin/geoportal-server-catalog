@@ -1,16 +1,22 @@
 <div class="search-box">
-	<div class="input-group input-group-sm">
+	<div class="input-group input-group-lg">
 		<input type="text" class="form-control"
 			placeholder="${i18n.search.searchBox.search}..."
-			data-dojo-attach-point="searchTextBox"/> 
+			data-dojo-attach-point="searchTextBox"
+			style="height: 62px;"/> 
 		<span class="input-group-btn">
 			<button class="btn btn-success btn-sm" type="button"
 				data-dojo-attach-point="searchButton"
 				data-dojo-attach-event="onClick: search"
-				title="${i18n.search.searchBox.search}">
+				title="Start Search"
+				style="height: 62px; width: 50px;">
 				<span class="esri-icon-search"></span>
-				${i18n.search.searchBox.search}
 			</button>
 		</span>
+	</div>
+	<div data-dojo-type="dijit/Tooltip"
+		 data-dojo-attach-point="ToolTip"
+		 data-dojo-props="position:['below']">
+		You can use 'OR' or 'AND'
 	</div>
 </div>

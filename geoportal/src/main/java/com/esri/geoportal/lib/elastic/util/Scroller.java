@@ -15,10 +15,6 @@
 package com.esri.geoportal.lib.elastic.util;
 import com.esri.geoportal.context.GeoportalContext;
 import com.esri.geoportal.lib.elastic.ElasticContext;
-
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
-
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchScrollRequestBuilder;
@@ -29,6 +25,9 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortBuilders;
 
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
+
 /**
  * Scroll through a collection of documents.
  */
@@ -38,7 +37,9 @@ public class Scroller {
   private boolean fetchSource = true;
   private String indexName;
   private String indexType;
+
   private int keepAliveMillis = 600000;
+
   private long maxDocs = Long.MAX_VALUE;
   private int pageSize = 100;
   private AtomicLong processed = new AtomicLong();
@@ -137,6 +138,13 @@ public class Scroller {
     search.setScroll(new TimeValue(getKeepAliveMillis()));
     search.addSort(SortBuilders.fieldSort("_doc"));
     search.setSize(getPageSize());
+    // adding due to scroll timeouts
+    // as per notes: https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-scroll.html
+    // https://discuss.elastic.co/t/apparent-scroll-timeout-error/4440/5
+    // Do not use slices. it screws up  reindexing
+    //SliceBuilder slice = new SliceBuilder(0,2);
+    //search.slice(slice);
+
     if (!getFetchSource()) {
       search.setFetchSource(false);
     }

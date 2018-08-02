@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:geo="http://a9.com/-/opensearch/extensions/geo/1.0/"
   xmlns:time="http://a9.com/-/opensearch/extensions/time/1.0/">
-  <ShortName>Geoportal</ShortName>
-  <Description>Geoportal</Description>
+  <ShortName>IEDA Integrated Catalog Search API</ShortName>
+  <Description>Search API implemented any text, bounding box, temporal interval search, with paging. Output is available JSON,  Atom XML, or CSW:Record XML, all of which contain basic Dublin Core metadata elements. Catalog records are harvested from the EarthChem Library, US Antarctic Program Data Center, Marine Geoscience Data Library and Academic Seismic Portal partners of the Interdisciplinary Earth Data Alliance. A web interface to search the catalog is accessible at http://....tbd
+</Description>
   <Image width="16" height="16">{base.url}/images/opensearch.png</Image>
   <Url type="application/atom+xml" indexOffset="1"
     template="{opensearch.url}?q={searchTerms}&amp;from={startIndex?}&amp;size={count?}&amp;id={geo:uid?}&amp;bbox={geo:box?}&amp;time={time:start?/{time:end?}&amp;f=atom"/>

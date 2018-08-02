@@ -13,9 +13,14 @@
  * limitations under the License.
  */
 
+/*
+customizations by SMR 2017-04-17
+
+*/
+
 G.evaluators.iso = {
 
-  version: "iso.v1",
+  version: "iso.v1.1",
 
   evaluate: function(task) {
     this.evalBase(task);
@@ -32,17 +37,60 @@ G.evaluators.iso = {
 
     /* general */
     G.evalProp(task,item,root,"fileid","gmd:fileIdentifier/gco:CharacterString");
-    G.evalProp(task,item,iden,"title","gmd:citation/gmd:CI_Citation/gmd:title/gco:CharacterString");
-    G.evalProp(task,item,iden,"description","gmd:abstract/gco:CharacterString");
-    G.evalProps(task,item,root,"keywords_s","//gmd:MD_TopicCategoryCode | //gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:keyword/gco:CharacterString | //gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:keyword/gmx:Anchor");
-    G.evalProp(task,item,iden,"thumbnail_s","gmd:graphicOverview/gmd:MD_BrowseGraphic/gmd:fileName/gco:CharacterString");
-    G.evalProps(task,item,root,"contact_organizations_s","//gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString");
-    G.evalProps(task,item,root,"contact_people_s","//gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString");
+    /* get title and alternateTitle */
+    G.evalProp(task,item,iden,"title","gmd:citation/gmd:CI_Citation/gmd:title/gco:CharacterString | gmd:citation/gmd:CI_Citation/gmd:alternateTitle/gco:CharacterString");
     
-    /* links */
+    /* get abstract and other citation details */
+    G.evalProp(task,item,iden,"description","gmd:abstract/gco:CharacterString | gmd:citation/gmd:CI_Citation/gmd:otherCitationDetails[not(contains(gco:CharacterString,'elated publications'))]/gco:CharacterString");
+    /* don't include the gmd topicCategory, they show up on separate facet gmd:MD_TopicCategoryCode */
+    G.evalProps(task,item,root,"keywords_s","//gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:keyword/*/text()");
+    G.evalProp(task,item,iden,"thumbnail_s","gmd:graphicOverview/gmd:MD_BrowseGraphic/gmd:fileName/gco:CharacterString");
+      
+    /* IEDA customizations */
+//these are the points of contacts, for metadata, the resource, or distribution; no distinction made
+ G.evalProps(task, item, root, "contact_organization_s", "//gmd:CI_RoleCode[contains(text(),'ontact') or contains(@codeListValue, 'ontact')]/../../gmd:organisationName[not(contains(gco:CharacterString,'issing'))]/gco:CharacterString");
+ G.evalProps(task, item, root, "contact_individual_s", "//gmd:CI_ResponsibleParty[gmd:role/gmd:CI_RoleCode/@codeListValue='pointOfContact']/gmd:individualName[not(contains(gco:CharacterString,'issing'))]/gco:CharacterString | //gmd:CI_ResponsibleParty[gmd:role/gmd:CI_RoleCode/@codeListValue='pointOfContact']/gmd:positionName[not(contains(gco:CharacterString,'issing'))]/gco:CharacterString");
+//these are the agents cited in the identification section, citedResponsibleParty or pointOfContact
+ G.evalProps(task, item, root, "cited_individual_s", "//gmd:CI_RoleCode[contains(text(),'rincip') or contains(@codeListValue, 'uthor') or contains(@codeListValue, 'riginator') or contains(@codeListValue, 'rincip')]/../../gmd:individualName[not(contains(gco:CharacterString,'issing'))]/gco:CharacterString");
+ G.evalProps(task, item, root, "cited_organization_s", "//gmd:CI_RoleCode[contains(text(),'rincip') or contains(@codeListValue, 'uthor') or contains(@codeListValue, 'riginator') or contains(@codeListValue, 'rincip')]/../../gmd:organisationName[not(contains(gco:CharacterString,'issing'))]/gco:CharacterString");
+ G.evalProps(task, item, root, "metadata_org_iconlink_s", "gmd:contact/gmd:CI_ResponsibleParty//gmd:CI_OnlineResource/gmd:linkage/gmd:URL");
+
+ /*  Use Apiso keyword to catch all, since keywording is not systematic
+ G.evalProps(task, item, root, "theme_keywords_s", "//gmd:MD_KeywordTypeCode[@codeListValue='theme']/../../gmd:keyword/gco:CharacterString | //gmd:MD_KeywordTypeCode[@codeListValue='theme']/../../gmd:keyword/gmx:Anchor");
+*/
+ 
+// G.evalProps(task, item, root, "place_keywords_s", "//gmd:MD_KeywordTypeCode[@codeListValue='place']/../../gmd:keyword/gco:CharacterString | //gmd:MD_KeywordTypeCode[@codeListValue='place']/../../gmd:keyword/gmx:Anchor | gmd:geographicIdentifier//gmd:code/gco:CharacterString");
+
+ G.evalProps(task, item, root, "place_keywords_s", "//gmd:MD_KeywordTypeCode[contains(@codeListValue,'lace')]/../../gmd:keyword/*/text() | gmd:geographicIdentifier//gmd:code/gco:CharacterString");
+
+ /* index items for instrument and platform */
+ G.evalProps(task, item, root, "platform_keywords_s", "//gmd:MD_KeywordTypeCode[contains(@codeListValue,'latform')]/../../gmd:keyword[not(contains(gco:CharacterString,'ot provided'))]/*/text()");
+ G.evalProps(task, item, root, "instrument_keywords_s", "//gmd:MD_KeywordTypeCode[contains(@codeListValue,'nstrument')]/../../gmd:keyword/*/text()");
+ 
+ G.evalProps(task, item, root, "project_keywords_s", "//gmd:MD_KeywordTypeCode[contains(@codeListValue,'roject')]/../../gmd:keyword/*/text()");
+ G.evalProps(task, item, root, "dataCentre_s", "//gmd:MD_KeywordTypeCode[contains(@codeListValue,'ata') and contains(@codeListValue,'ent')]/../../gmd:keyword/*/text()");
+ G.evalProps(task, item, root, "ieda_data_type_keywords_s", "//gmd:MD_KeywordTypeCode[normalize-space(text())='IEDA data type categories']/../../gmd:keyword/*/text()");
+ G.evalProps(task, item, root, "feature_of_interest_keywords_s", "//gmd:MD_KeywordTypeCode[normalize-space(text())='IEDA feature of interest']/../../gmd:keyword/*/text()");
+ G.evalProps(task, item, root, "ieda_topic_keywords_s", "//gmd:MD_KeywordTypeCode[normalize-space(text())='IEDA topic']/../../gmd:keyword/*/text()");
+/* G.evalProps(task, item, root, "tags_s", "//gmd:MD_Keywords[not(gmd:type)]/gmd:keyword/gco:CharacterString | //gmd:MD_Keywords[not(gmd:type)]/gmd:keyword/gmx:Anchor  | //gmd:MD_KeywordTypeCode[text()='theme' or text()='']/../../gmd:keyword/gco:CharacterString | //gmd:MD_KeywordTypeCode[text()='theme' or text()='']/../../gmd:keyword/gmx:Anchor");
+*/ 
+ G.evalProps(task, item, root, "tags_s", "//gmd:MD_KeywordTypeCode[not(contains(@codeListValue,'lace') or contains(@codeListValue,'latform') or contains(@codeListValue,'nstrument') or contains(@codeListValue,'roject') or contains(@codeListValue,'dataCentre') or contains(text(),'IEDA'))]/../../gmd:keyword/*/text() | //gmd:MD_Keywords[not(gmd:type)]/gmd:keyword/*/text() |  //gmd:MD_KeywordTypeCode[text()='theme' or text()='']/../../gmd:keyword/*/text()");
+
+ G.evalProps(task, item, root, "distribution_links_s", "//gmd:distributionInfo//gmd:MD_DigitalTransferOptions//gmd:linkage/gmd:URL | //gmd:aggregationInfo//gmd:code[starts-with(gco:CharacterString/text(),'http')]/gco:CharacterString");
+
+ G.evalProps(task, item, root, "apiso_Format_s", "//gmd:MD_Format/gmd:name/gco:CharacterString");
+ 
+// G.evalProps(task, item, root, "contact_links_s", "//gmd:CI_OnlineResource/gmd:linkage/gmd:URL[ancestor::gmd:CI_Contact]");
+
+ /* end IEDA customizations */
+      
+      
+      /* links  */
+    G.evalProps(task,item,root,"links_s","//gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL"); 
+
     //G.evalProps(task,item,root,"links_s","//gmd:CI_OnlineResource/gmd:linkage/gmd:URL");
     //G.evalProps(task,item,root,"links_s","//gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:linkage/gmd:URL | //srv:connectPoint/gmd:CI_OnlineResource/gmd:linkage/gmd:URL"); 
-    G.evalProps(task,item,root,"links_s","//gmd:CI_OnlineResource/gmd:linkage/gmd:URL[not(ancestor::gmd:thesaurusName)]");    
+    //G.evalProps(task,item,root,"links_s","//gmd:CI_OnlineResource/gmd:linkage/gmd:URL[not(ancestor::gmd:thesaurusName)]");    
 
     /* identification */
     G.evalProp(task,item,root,"apiso_Identifier_s","gmd:fileIdentifier/gco:CharacterString");
@@ -55,7 +103,7 @@ G.evaluators.iso = {
 
     /* subject */
     G.evalProps(task,item,root,"apiso_Subject_txt","//gmd:MD_TopicCategoryCode | //gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:keyword/gco:CharacterString | //gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:keyword/gmx:Anchor");
-    G.evalProps(task,item,root,"apiso_Format_s","gmd:distributionInfo/gmd:MD_Distribution/gmd:distributionFormat/gmd:MD_Format/name/gco:CharacterString");
+
     G.evalProps(task,item,root,"apiso_TopicCategory_s","//gmd:MD_TopicCategoryCode");
     G.evalProps(task,item,root,"apiso_KeywordType_s","//gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:type/gmd:MD_KeywordTypeCode/@codeListValue");
     G.evalCode(task,item,root,"apiso_Type_s","gmd:hierarchyLevel/gmd:MD_ScopeCode");
@@ -65,7 +113,8 @@ G.evaluators.iso = {
       G.evalDate(task, item, iden, "apiso_CreationDate_dt", "gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:date/gco:Date[../../gmd:dateType/gmd:CI_DateTypeCode/@codeListValue='creation'] | gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:date/gco:DateTime[../../gmd:dateType/gmd:CI_DateTypeCode/@codeListValue='creation']");
       G.evalDate(task, item, iden, "apiso_RevisionDate_dt", "gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:date/gco:Date[../../gmd:dateType/gmd:CI_DateTypeCode/@codeListValue='revision'] | gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:date/gco:DateTime[../../gmd:dateType/gmd:CI_DateTypeCode/@codeListValue='revision']");
       G.evalDate(task, item, iden, "apiso_PublicationDate_dt", "gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:date/gco:Date[../../gmd:dateType/gmd:CI_DateTypeCode/@codeListValue='publication'] | gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:date/gco:DateTime[../../gmd:dateType/gmd:CI_DateTypeCode/@codeListValue='publication']");
-
+    /*//gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:date/child::*[../..//gmd:CI_DateTypeCode/@codeListValue='publication'] */
+      
       /* language */
     G.evalCode(task,item,root,"apiso_Language_s","gmd:language/gmd:LanguageCode");
     G.evalCode(task,item,iden,"apiso_ResourceLanguage_s","gmd:language/gmd:LanguageCode");
@@ -81,7 +130,9 @@ G.evaluators.iso = {
     var item = task.item, root = task.root;
     G.evalProps(task,item,root,"apiso_InspireSpatialDataThemes_s","//gmd:title[gco:CharacterString='GEMET - INSPIRE themes, version 1.0']/../../../gmd:keyword/gco:CharacterString");
     G.evalProps(task,item,root,"apiso_Degree_b","//gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:report/gmd:DQ_DomainConsistency/gmd:result/gmd:DQ_ConformanceResult/gmd:pass/gco:Boolean");
-    G.evalProps(task,item,root,"apiso_Lineage_txt","//gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/gmd:statement/gco:CharacterString");
+      
+      /* IEDA modify to pick up process step descriptions as well  */
+    G.evalProps(task,item,root,"apiso_Lineage_txt", "//gmd:LI_Lineage/gmd:statement/gco:CharacterString | //gmd:processStep//gmd:description/gco:CharacterString");
     G.evalProps(task,item,root,"apiso_ConditionApplyingToAccessAndUse_txt","//gmd:resourceConstraints/gmd:MD_LegalConstraints/gmd:otherConstraints/gco:CharacterString");
     G.evalCode (task,item,root,"apiso_ResponsiblePartyRole_txt","gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:role/gmd:CI_RoleCode");
     G.evalProps(task,item,root,"apiso_SpecificationTitle_txt","//gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:report/gmd:DQ_DomainConsistency/gmd:result/gmd:DQ_ConformanceResult/gmd:specification/gmd:CI_Citation/gmd:title/gco:CharacterString");
@@ -110,7 +161,7 @@ G.evaluators.iso = {
 
     G.evalProps(task,item,root,"apiso_ServiceType_s","//gmd:identificationInfo/srv:SV_ServiceIdentification/srv:serviceType/gco:LocalName");
     G.evalProps(task,item,root,"apiso_ServiceTypeVersion_s","//gmd:identificationInfo/srv:SV_ServiceIdentification/srv:serviceTypeVersion/gco:CharacterString");
-    G.evalProps(task,item,root,"apiso_Operation_s","//gmd:identificationInfo/srv:SV_ServiceIdentification/srv:containsOperations/srv:SV_OperationMetadata/srv:operationName/gco:CharacterStrin");
+    G.evalProps(task,item,root,"apiso_Operation_s","//gmd:identificationInfo/srv:SV_ServiceIdentification/srv:containsOperations/srv:SV_OperationMetadata/srv:operationName/gco:CharacterString");
     G.evalProps(task,item,root,"apiso_OperatesOn_s","//gmd:identificationInfo/srv:SV_ServiceIdentification/srv:operatesOn/@uuidref | //gmd:identificationInfo/srv:SV_ServiceIdentification/srv:operatesOn/@xlink:href");
     G.evalProps(task,item,root,"apiso_OperatesOnIdentifier_s","//gmd:identificationInfo/srv:SV_ServiceIdentification/srv:coupledResource/srv:SV_CoupledResource/srv:identifier");
     G.evalProps(task,item,root,"apiso_OperatesOnName_s","//gmd:identificationInfo/srv:SV_ServiceIdentification/srv:coupledResource/srv:SV_CoupledResource/srv:operationName");

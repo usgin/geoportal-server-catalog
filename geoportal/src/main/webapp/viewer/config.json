@@ -43,8 +43,8 @@
       {
         "uri": "widgets/Search/Widget",
         "position": {
-          "left": 155,
-          "top": 5
+          "left": 7,
+          "bottom": 65
         },
         "version": "2.0.1"
       },
@@ -76,8 +76,8 @@
         "uri": "widgets/GeoportalSearch/Widget",
         "version": "2.0.1",
         "position":{
-          "left": 55,
-          "top": 55
+          "left": 160,
+          "top": 5
         }
       },
       {
@@ -174,10 +174,10 @@
     "mapOptions": {
       "extent": {
         "type": "extent",
-        "xmin": -18520997.70160645,
-        "ymin": 2430493.343299305,
-        "xmax": -3659193.418067012,
-        "ymax": 6980025.266831786,
+        "xmin": -20037508.3427892,
+        "ymin": -20037508.3427892,
+        "xmax": 20037508.3427892,
+        "ymax": 20037508.3427892,
         "spatialReference": {
           "wkid": 102100
         }

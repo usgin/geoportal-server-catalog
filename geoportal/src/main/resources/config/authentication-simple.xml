@@ -9,10 +9,13 @@
   <security:authentication-manager alias="authenticationManager">
     <security:authentication-provider>
       <security:user-service>
-        <security:user name="antadmin2" password="^i3d@anta!" authorities="ROLE_ADMIN,ROLE_PUBLISHER" />
-        <security:user name="srichard" password="5mrGPT@dm1n" authorities="ROLE_ADMIN,ROLE_PUBLISHER" />
-        <security:user name="antpublisher" password="^i3d@pub!" authorities="ROLE_PUBLISHER" />
-        <security:user name="user" password="user" authorities="ROLE_USER" />
+        <security:user name="iedaadmin" password="!#DA@dm1n?" authorities="ROLE_ADMIN,ROLE_PUBLISHER" />
+
+        <security:user name="srichard" password="5mr@dm1n!" authorities="ROLE_ADMIN,ROLE_PUBLISHER" />
+
+        <security:user name="iedapub" password="!#DApub1?" authorities="ROLE_PUBLISHER" />
+
+        <security:user name="user" password="$uservvd" authorities="ROLE_USER" />
       </security:user-service>
     </security:authentication-provider>
   </security:authentication-manager>

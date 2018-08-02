@@ -18,12 +18,18 @@ define(["dojo/_base/declare",
         "dojo/text!./templates/AboutPanel.html",
         "dojo/i18n!../nls/resources",
 
-        ], 
+        ],
 function(declare, lang, Templated, template, i18n) {
 
   var oThisClass = declare([Templated], {
+
     i18n: i18n,
     templateString: template,
+    
+    postCreate: function() {
+      this.inherited(arguments);
+    }
+
 
   });
 

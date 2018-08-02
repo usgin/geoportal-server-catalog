@@ -1,17 +1,11 @@
 {
   "catalogs": [
       {
-        "name": "Geoportal Sandbox",
-        "url": "http://gptogc.esri.com/geoportal/rest/find/document"
-      },
-      {
-        "name": "California Geoportal",
-        "url": "http://portal.gis.ca.gov/geoportal/rest/find/document"
-      },
-      {
-        "name": "USGIN Geoportal",
-        "url": "http://catalog.usgin.org/geoportal/rest/find/document"
-      }      
+        "name": "IEDA Integrated Catalog",
+        "url": "http://catalog-dev.iedadata.org:8080/geoportal/rest/metadata/search?gptVersion=2",
+        "gptVersion":2
+      }
+     
   ],
   "recordsPerPage": 10,
   "showAllAddedLayers": true

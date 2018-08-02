@@ -1,52 +1,57 @@
-<div data-dojo-attach-point="contentNode">
-     <!-- title + lede -->
-     <div class="title page-header">
-         <div class="container-fluid">
-             <div class="row title">
-                 <div class="col-xs-12">                        
-                     <h1>Geoportal</h1>                                           
-                     <p class="lead">Tag line here</p>
-                 </div>
-             </div>
-         </div>
-     </div>
-        
-	 <!-- main -->          
-	 <div class="content main">
-	    <div class="container-fluid">
-	    <div class="row">
-	        <div class="col-xs-12">         
-	            <div id="content" class="row">
-	                <div class="col-xs-12">                                           
-				<h2>Who We Are</h2>
-				<p>At ille pellit, qui permulcet sensum voluptate. Sed in rebus apertissimis nimium longi sumus. Quorum sine causa fieri nihil putandum est. Atqui reperies, inquit, in hoc quidem pertinacem; Tu vero, inquam, ducas licet, uterque enim summo bono fruitur, id est voluptate. Nemo nostrum istius generis asotos iucunde putat vivere. </p>
-	                </div>
-	            </div>     
-	            </div>
-	    </div>
-	    </div>
-	</div>
+<div>
+<div class="aGrid">
+  <div class="aBox aaa">&nbsp;</div>
+  <div class="aBox aa"> 
+  <h2>About the Interdisciplinary Earth Data Alliance (IEDA) Integrated Catalog</h2>
+<p>This application searches a catalog of resources under the stewardship of partners in the Interdisciplinary Earth Data Alliance (IEDA). Catalog records are harvested from the <a href=http://www.earthchem.org/library>EarthChem Library</a>, <a href=http://www.usap-dc.org/index>US Antarctic Program Data Center</a>, <a href=http://www.marine-geo.org/library/>Marine-Geo Digital Library</a> and <a href=http://www-udc.ig.utexas.edu/sdc/>Academic Seismic Portal</a> partners of the Interdisciplinary Earth Data Alliance. Funding is provided by the National Science Foundation (<a href=https://www.nsf.gov/awardsearch/showAward?AWD_ID=1636653&HistoricalAwards=false>Award #1636653</a>). </p>
+<p>
+<h3>Search options:</h3>
+<p>
+Enter any text in the Search box (upper left); the content searched includes title, author, abstract, and keywords. Click on the green magnifying glass button to execute the search. Applied search terms will appear in the list beneath the 'Filters' heading at the top center. Each applied search term has an 'X' next to it. Clicking on the 'X' will remove that filter criteria and update the facet counts.</p>
+<p>The number of items matching the current filter is displayed in the upper right. The results panel displays 10 result cards at a time. Advance or move back through the current selected set using the arrows next to the page number label in the upper right. </p>
+<p>The result set can be ordered by relevance (as determined by the search engine), by title, or by reported acquisition date (which is likely to be different from the release or publication date displayed in the result cards on the web page). </p>
+<p>Click on one of the titles beneath 'Search facets' (left side) to see a list of facet terms. If a search term has already been applied, the facet list represents results for the currently selected set. Clicking on a term in the facet list will add that as a filter criteria and update facet counts.</p> 
+<h4>Facets:</h4>
+<ul>
+<li>'Investigator/Author' names are those provided by the data submitters, with review by IEDA curators. </li>
+<li>'Acquisition date interval' provides a plot with dots indicating the begin and end dates of acquisition intervals as reported by the submitter; the relationship of this reported interval to the data is thus variable. Use with caution, because the begin and end interval dots are not differentiated. Apply the filter by clicking on the small date range text ('yyyy..yyyy') to the left of the interval selection box in the lower right of the facet card. Note that in order to change the criteria, the 'Acquisition date interval' filter should be removed and reapplied.</li> 
+<li>'Publication or release date' provides a plot with dots indicating when the dataset was published or released, or will be released if it is under moratorium. See notes on the 'Acquisition date interval' facet (above) for usage instructions.</li>
+<li>'IEDA Topic', 'IEDA Feature of Interest', and 'IEDA Data Type Categories' are keywords from a controlled vocabulary reviewed by IEDA curators. The lists provide a good overview of the kinds of content in the catalog and the frequency of different content types.</li>
+<li>'Instrument and platform' facets are applied systematically for datasets in the Marine-Geo Digital Library, and are provided by submitters and therefore less consistent for other partner systems. It cannot be assumed that all datasets derived with a particular instrument or platform have been associated with these facets.</li>
+<li>'Tags' are uncontrolled index terms provided by data submitters or IEDA curators to assist with data discovery. Unlike the other facet lists, this list is sorted according to the frequency (most common first) that a term is provided as a tag within the current selected records.</li>
+<li>'IEDA partner system' allows filtering for all catalog items from a particular data repository.</li>
+<li>'Projects, cruises, programs' are applied systematically for datasets in the Marine-Geo Digital Library, and are provided by submitters and therefore less consistent, for other partner systems. It cannot be assumed that all datasets related to a particular initiative have been associated with these facets.</li>
+<li>'Place' keywords are provided by data submitters, and are not vetted by IEDA curators. It cannot be assumed that all datasets related to a particular place have been associated with these facets.</li>
+<li><p>'Map' provides for geospatial filtering. Pan and zoom to an area of interest, and click the 'Intersects' radio button to find all datasets with bounding boxes intersecting the current view extent. Clicking 'Within' will find all resources with bounding boxes completely within the current view extent. Note that the spatial search function implemented by the indexing system does not function as expected for boxes intersecting the antimeridian (180E). For data related to ship tracks or widely scattered individual samples, the bounding box extent will likely misrepresent the actual data coverage.  Not all metadata records include a geographic bounding box, and these will not be found using the Map facet filter. Try using place name search in the Search box if the map search does not find expected results.</p> 
+<p>Dots on the map represent the centroid of provided bounding boxes, aggregated into latitude-longitude grid cells that are appropriate to the current map extent. Larger dots indicate more hits within the grid cell. Zooming in on a dot will reduce the grid cell size, so smaller dots will appear more accurately representing individual centroid locations. When the map facet is open, mousing-over a search result in the results panel will display a red rectangle in the map showing the bounding box if a bounding box was provided in the metadata for the resource.</p></li>
+</ul>
+<p>The 'Sign In' link in the upper right is for administrator use only.</p>
+<p>For each search result displayed in the center part of the window, the resource title, authors or originators, release or publication date, and hosting partner system are reported at the top, followed by the abstract provided in the metadata. The links at the bottom of the card provide access to a web page presenting all metadata provided for the resource, the ISO 19139 XML record that was harvested to register the resource in the catalog, and a JSON document that is the actual document indexed for the catalog search. If links to the resource are provided in the metadata, these will be in the 'Links to resource' drop down on the right end of the links list. One or more links might be offered.</p>
 
-	 <div class="container-fluid">
-	 <div class="row">
-	 <div class="col-xs-12">
-	 	<div class="row">
-	 	<div class="col-xs-12 col-md-9">
-	    	<h2>What We Do</h2>
-	        <div class="row">
-	        <div class="col-xs-12">
-	        	<p>Diodorus, eius auditor, adiungit ad honestatem vacuitatem doloris. Idem iste, inquam, de voluptate quid quoque iucunditatem, si vis transfer in animum; Non laboro, inquit, de nomine. Quae cum dixisset, finem ille.</p>
-	         </div>
-	        </div>
-	    </div>
-	 	</div>
-	 	<div class="row bg-info">
-	 	<div class="col-xs-12 col-md-3">     
-			<h4>Contact Us</h4>
-			<p>For questions or suggestions for improvement contact <a href="#">SDI</a> Program Office.</p>
-	 	</div>
-	 	</div>
-	 </div>
-	 </div>
-	 </div>
- </div> 
+<h3>Technical Information</h3>
+<p>The catalog search is implemented using the ESRI open-source Geoportal Software, v. 2.5, customized in an <a href=https://github.com/iedadata/geoportal-server-catalog>IEDA fork</a> of the ESRI gitHub repository. Metadata are harvested into the catalog as ISO 19139 xml files from <a href=http://get.iedadata.org/metadata/iso>web accessible folders</a>, and metadata are available as a web page, ISO 19139 XML, or JSON via links with each search result. </p>
+<p>
+The catalog can be searched via API using the OGC Catalog Service for the Web (CSW), version 3.0.0 or OpenSearch.  Capabilities are described in the <a href=http://catalog-dev.iedadata.org:8080/geoportal/csw?service=CSW&request=GetCapabilities> CSW getCapabilities document</a> and the <a href=http://catalog-dev.iedadata.org:8080/geoportal/opensearch/description>OpenSearch description </a> 
+ </p>
+ <p>
+The APIs return metadata in CSW records or Atom XML format, both of which contain basic Dublin Core metadata elements.
+</p>
+  </div>
+  <div class="aBox bb">
+    <image src="images/IEDANoWords.png" style="height=150; width=150"/>
+  </div>
+</div>
+<footer class="page-footer" style="background:#023A61; padding:5px">
+	<div class="container">
+		<div class="row">
+			<div id="footer-info" class="col-sm-12 col-md-8">
+				<p> <a href="https://www.iedadata.org/contact">Contact</a></p>
+				<p>Hosted at <a href="http://www.ldeo.columbia.edu">Lamont-Doherty Earth Observatory</a> of <a href="http://www.columbia.edu">Columbia University</a>.</p>
+			</div>
+			<div id="footer-nsf-logo" class="col-sm-12 col-md-4">
+				<img src="https://www.iedadata.org/wp-content/themes/IEDA/assets/img/nsf-logo.png" />
+			</div>
+		</div>
+	</div>
+</footer>
+</div>

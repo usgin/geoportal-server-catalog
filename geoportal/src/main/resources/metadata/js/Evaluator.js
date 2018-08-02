@@ -25,25 +25,47 @@ load("classpath:metadata/js/EvaluatorFor_ArcGIS.js");
 load("classpath:metadata/js/EvaluatorFor_DC.js");
 load("classpath:metadata/js/EvaluatorFor_FGDC.js");
 load("classpath:metadata/js/EvaluatorFor_ISO.js");
+//load("classpath:metadata/js/EvaluatorFor_ISO_CINERGI.js");
 
-G._metadataTypes =  {
-  "iso19115": {
+G._metadataTypes =  
+{
+/*
+ // smr 2017-10-03 comment out for now
+
+    "iso19115-CINERGI": {
+        key: "iso19115-CINERGI",
+        evaluator: G.evaluators.cinergi,
+        //interrogationXPath: "/gmd:MD_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString[text()='Earthcube CINERGI Metadata Pipeline']",
+        interrogationXPath: "/gmi:MI_Metadata/gmd:contact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString[text()='Earthcube CINERGI Metadata Pipeline']",
+        //identifier: "http://www.isotc211.org/2005/gmi",
+        identifier: "CINERGI_ISO19115",
+        detailsXslt: "metadata/details/iso-details/xml-to-html-ISO.xsl",
+  //      xsdLocation: "https://www.ngdc.noaa.gov/metadata/published/xsd/schema.xsd",
+   //     schematronXslt: null
+    },*/
+	
+	// smr 2017-10-03 make interrogation path // instead of /
+	// change the details XSLT to the USGIN presentation
+	// add OGC csw apiso.xsd as schema location
+    "iso19115": {
     key: "iso19115",
     evaluator: G.evaluators.iso,
-    interrogationXPath: "/gmd:MD_Metadata",
+    interrogationXPath: "//gmd:MD_Metadata",
     identifier: "http://www.isotc211.org/2005/gmd",
-    detailsXslt: "metadata/details/iso-details/xml-to-html-ISO.xsl",
-    //xsdLocation: "http://www.ngdc.noaa.gov/metadata/published/xsd/schema.xsd",
+    detailsXslt: "metadata/details/iso-details/ISO19139ToHTMLwMap.xsl",
+//    xsdLocation: "http://schemas.opengis.net/csw/2.0.2/profiles/apiso/1.0.0/apiso.xsd",
     //schematronXslt: "metadata/schematron/Gemini2_R2r2-schematron.xslt",
     toKnownXslt: null
   },
+  // smr 2017-10-03 change evaluator from cinergi to iso
+  // change detailsXLST, add xsd location
   "iso19115-2": {
     key: "iso19115-2",
-    evaluator: G.evaluators.iso,
-    interrogationXPath: "/gmi:MI_Metadata",
+    evaluator: G.evaluators.iso, 
+    interrogationXPath: "//gmi:MI_Metadata",
     identifier: "http://www.isotc211.org/2005/gmi",
-    detailsXslt: "metadata/details/iso-details/xml-to-html-ISO.xsl",
-    xsdLocation: null,
+    detailsXslt: "metadata/details/iso-details/ISO19139ToHTMLwMap.xsl",
+//    xsdLocation: "http://ngdc.noaa.gov/metadata/published/xsd/schema.xsd",
     schematronXslt: null
   },
   "fgdc": {

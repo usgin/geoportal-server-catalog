@@ -3,58 +3,154 @@
     <div class="g-search-pane-left">
       <div data-dojo-type="app/search/PageUrlFilter"></div>
       <div data-dojo-type="app/search/SearchBox"></div>
-      <div data-dojo-type="app/search/SpatialFilter"
+        <div style="overflow-y: auto;max-height:  90%;">
+<div id="infoSearchText">Search facets</div>
+
+<!-- Authors -->
+      <div data-dojo-type="app/search/TermsAggregation"
+        data-dojo-props="
+		field:'cited_individual_s',
+		label:'Investigator/Author',
+		props:{size:2000, order:{_term:'asc'}},
+		tooltip:'Cited originator of content from metadata'">
+      </div>
+ 
+<!-- Acquisition date. Change from date filter to temporal filter SMR 2017-11-15 
+ remove fieldsOperator:'should'-->
+      <div data-dojo-type="app/search/TemporalFilter"
+           data-dojo-props="
+          nestedPath:'timeperiod_nst',
+          field:'timeperiod_nst.begin_dt',
+          toField:'timeperiod_nst.end_dt',
+          interval:'year',
+          open:false,
+          label:'Acquisition date interval'">
+      </div>
+
+<!-- Publication date -->
+     <div data-dojo-type="app/search/TemporalFilter"
+           data-dojo-props="
+          field:'apiso_PublicationDate_dt',
+          interval:'year',
+          open:false,
+          label:'Publication or release date',
+          fieldsOperator: 'must'">
+      </div>
+ 
+<!-- IEDA Topic -->   
+      <div data-dojo-type="app/search/TermsAggregation"
+        data-dojo-props="
+		field:'ieda_topic_keywords_s',
+		label:'IEDA Topic',
+		props:{size:100, order:{_term:'asc'}},
+		tooltip:'IEDA Science subject areas, from IEDA'">
+      </div>
+
+<!-- IEDA Feature of Interest -->     
+      <div data-dojo-type="app/search/TermsAggregation"
+        data-dojo-props="
+		field:'feature_of_interest_keywords_s',
+		label:'IEDA Feature of Interest',
+		props:{size:100, order:{_term:'asc'}},
+		tooltip:'Geologic features, feature types and realms, from IEDA'">
+      </div>
+
+<!-- IEDA  Data Type Categories -->   
+      <div data-dojo-type="app/search/TermsAggregation"
+        data-dojo-props="
+		field:'ieda_data_type_keywords_s',
+		label:'IEDA Data Type Categories',
+		props:{size:100, order:{_term:'asc'}},
+		tooltip:'High level data types, from IEDA'">
+      </div>
+
+<!-- Instrument, sensor -->     
+      <div data-dojo-type="app/search/TermsAggregation"
+        data-dojo-props="
+		field:'instrument_keywords_s',
+		label:'Instruments',
+		props:{size:1000, order:{_term:'asc'}},
+		tooltip:'Instruments or sensors used, from data providers'">
+      </div>
+ 
+<!-- platform, facility -->
+	  <div data-dojo-type="app/search/TermsAggregation"
+        data-dojo-props="
+		field:'platform_keywords_s',
+		label:'Platforms',
+		props:{size:1000, order:{_term:'asc'}},
+		tooltip:'Observation platform or facility, from data providers'">
+      </div> 
+
+<!-- other tags from data providers, ordered by frequency -->        
+      <div data-dojo-type="app/search/TermsAggregation"
+        data-dojo-props="
+		field:'tags_s',
+		label:'Tags',
+		props:{size:200},
+		tooltip:'Data type, devices, features, from data providers. Sorted by frequency'">
+      </div>
+ 
+ <!-- Partner systems from dataCentre_s -->
+      <div data-dojo-type="app/search/TermsAggregation"
+        data-dojo-props="
+        field:'dataCentre_s',
+        label:'IEDA Partner System',
+        props:{size:40, order:{_term:'asc'}},
+        tooltip:'Steward for this resource'">
+      </div>
+
+<!-- projects, cruises, programs -->
+	  <div data-dojo-type="app/search/TermsAggregation"
+        data-dojo-props="
+		field:'project_keywords_s',
+		label:'Projects, cruises, programs',
+		props:{size:2000, order:{_term:'asc'}},
+		tooltip:'Free text tagging, from data provider'">
+      </div>
+
+ <!-- Place names -->        
+  <div data-dojo-type="app/search/TermsAggregation"
+        data-dojo-props="
+		field:'place_keywords_s',
+		label:'Place keywords',
+		props:{size:1000, order:{_term:'asc'}},
+		tooltip:'Location names, from data provider'">
+      </div>       
+      
+
+       
+<!-- map-based geolocation -->
+       <div  data-dojo-type="app/search/SpatialFilter"
         data-dojo-props="
           field: 'envelope_geo',
           pointField: 'envelope_cen_pt',
           allowAggregation: true,
           open: false,
           label:'${i18n.search.criteria.map}'">
-      </div>
-      <div data-dojo-type="app/search/TemporalFilter"
-        data-dojo-props="
-          nestedPath:'timeperiod_nst',
-          field:'timeperiod_nst.begin_dt',
-          toField:'timeperiod_nst.end_dt',
-          interval:'year',
-          open:false,
-          label:'${i18n.search.criteria.timePeriod}'">
-      </div>
-      <div data-dojo-type="app/search/TemporalFilter"
-        data-dojo-props="
-          field:'sys_modified_dt',
-          interval:'day',
-          open:false,
-          label:'${i18n.search.criteria.date}'">
-      </div>
-      <!--
-      <div data-dojo-type="app/search/DateFilter"
-        data-dojo-props="field:'sys_created_dt',interval:'day',allowHistogram:false,label:'Created'">
-      </div>
-      -->
-      <div data-dojo-type="app/search/TermsAggregation"
-        data-dojo-props="field:'sys_owner_s',open:false,label:'${i18n.search.criteria.owner}'">
-      </div>
-      <div data-dojo-type="app/search/TermsAggregation"
-        data-dojo-props="field:'apiso_TopicCategory_s',open:false,label:'${i18n.search.criteria.topicCategory}'">
-      </div>
-      <div data-dojo-type="app/search/TermsAggregation"
-        data-dojo-props="field:'sys_metadatatype_s',label:'${i18n.search.criteria.metadataType}'">
-      </div>  
-      <div data-dojo-type="app/search/TermsAggregation"
-        data-dojo-props="field:'contact_organizations_s',label:'${i18n.search.criteria.organizations}'">
-      </div>
-      <!-- e.g. field:'keywords_s',label:'Keywords',props:{size:20,min_doc_count:500} -->
-      <div data-dojo-type="app/search/TermsAggregation"
-        data-dojo-props="field:'keywords_s',label:'${i18n.search.criteria.keywords}',props:{size:20}">
-      </div>    
-      <div data-dojo-type="app/search/TermsAggregation"
-        data-dojo-props="field:'src_source_name_s',label:'${i18n.search.criteria.origin}',props:{size:20}">
-      </div>    
+      </div> 
+      
+
+      <!-- end example hierarchies -->
+        </div>
     </div>
     <div class="g-search-pane-right">
       <div data-dojo-type="app/search/AppliedFilters" data-dojo-props="autoExpand:true"></div>
       <div data-dojo-type="app/search/ResultsPane"></div>
     </div>
-  </div>    
+  </div> 
+    <footer class="page-footer" style="background:#023A61; padding:5px">
+	<div class="container">
+		<div class="row">
+			<div id="footer-info" class="col-sm-12 col-md-8">
+				<p> <a href="https://www.iedadata.org/contact">Contact</a></p>
+				<p>Hosted at <a href="http://www.ldeo.columbia.edu">Lamont-Doherty Earth Observatory</a> of <a href="http://www.columbia.edu">Columbia University</a>.</p>
+			</div>
+			<div id="footer-nsf-logo" class="col-sm-12 col-md-4">
+				<img src="https://www.iedadata.org/wp-content/themes/IEDA/assets/img/nsf-logo.png" />
+			</div>
+		</div>
+	</div>
+</footer>
+     
 </div>

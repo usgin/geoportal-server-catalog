@@ -30,14 +30,14 @@ define({
     },
     
     nav: {
-      brand: "Geoportal",
+      brand: "IEDA Integrated Catalog",
       home: "Home",
       search: "Search",
       map: "Map",
       about: "About",
       content: "Content",
       welcomePattern: "{name}",
-      signIn: "Sign In",
+      signIn: "Admin Sign In",
       signOut: "Sign Out",
       options: {
         createAccount: "Create Account",
@@ -212,10 +212,10 @@ define({
     
     item: {
       actions: {
-        html: "HTML",
-        xml: "XML",
+        html: "Full metadata record",
+        xml: "ISO 19139 XML",
         json: "JSON",
-        links: "Links",
+        links: "Links to resource",
         addToMap: "Add to Map",
         options: {
           caption: "Options",
